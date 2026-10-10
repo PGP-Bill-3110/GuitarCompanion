@@ -1,0 +1,145 @@
+[
+  {
+    "id": "single-note-01",
+    "title": "Single Notes - C D E F",
+    "description": "Play four single notes in sequence.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 60,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 3,
+        "durationBeats": 1
+      }
+    ]
+  },
+
+  {
+    "id": "c-major-scale",
+    "title": "C Major Scale",
+    "description": "Play the C major scale ascending.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 60,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 3,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 4,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "A4",
+        "midi": 69,
+        "startBeat": 5,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "B4",
+        "midi": 71,
+        "startBeat": 6,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C5",
+        "midi": 72,
+        "startBeat": 7,
+        "durationBeats": 1
+      }
+    ]
+  },
+
+  {
+    "id": "chord-progression-01",
+    "title": "G - D - Em - C",
+    "description": "Basic four-chord progression.",
+    "difficulty": "beginner",
+    "analysisMode": "chord_sequence",
+    "bpm": 80,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "chord",
+        "chord": "G",
+        "startBeat": 0,
+        "durationBeats": 4
+      },
+      {
+        "type": "chord",
+        "chord": "D",
+        "startBeat": 4,
+        "durationBeats": 4
+      },
+      {
+        "type": "chord",
+        "chord": "Em",
+        "startBeat": 8,
+        "durationBeats": 4
+      },
+      {
+        "type": "chord",
+        "chord": "C",
+        "startBeat": 12,
+        "durationBeats": 4
+      }
+    ]
+  }
+]
