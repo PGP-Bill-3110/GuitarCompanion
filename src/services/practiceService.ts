@@ -31,6 +31,9 @@ export interface PracticeSession {
   sourceId:
     string | null;
 
+  exerciseId?:
+    string | null;
+
   title: string;
 
   durationSeconds: number;
@@ -45,14 +48,29 @@ export interface PracticeSession {
 
   notes: string;
 
-  accuracy:
+
+  // ==============================
+  // AI ANALYSIS
+  // ==============================
+
+  overallScore:
+    number | null;
+
+  noteAccuracy:
     number | null;
 
   timingScore:
     number | null;
 
-  noteAccuracy:
+  audioId:
+    string | null;
+
+  analysisFeedback:
+    string[];
+
+  analysisUpdatedAtMs:
     number | null;
+
 
   createdAtMs: number;
 }
@@ -73,6 +91,8 @@ interface CreatePracticeSessionInput {
 
   sourceId?: string;
 
+  exerciseId?: string;
+
   title: string;
 
   durationSeconds: number;
@@ -85,11 +105,11 @@ interface CreatePracticeSessionInput {
 
   notes?: string;
 
-  accuracy?: number;
+  // accuracy?: number;
 
-  timingScore?: number;
+  // timingScore?: number;
 
-  noteAccuracy?: number;
+  // noteAccuracy?: number;
 }
 
 // ======================================
@@ -119,6 +139,10 @@ export async function createPracticeSession(
           input.sourceId ??
           null,
 
+        exerciseId:
+          input.exerciseId ??
+          null,
+
         title:
           input.title.trim(),
 
@@ -146,16 +170,22 @@ export async function createPracticeSession(
           input.notes?.trim() ??
           "",
 
-        accuracy:
-          input.accuracy ??
-          null,
-
-        timingScore:
-          input.timingScore ??
+        overallScore:
           null,
 
         noteAccuracy:
-          input.noteAccuracy ??
+          null,
+
+        timingScore:
+          null,
+
+        audioId:
+          null,
+
+        analysisFeedback:
+          [],
+
+        analysisUpdatedAtMs:
           null,
 
         createdAt:
@@ -466,6 +496,64 @@ export async function updatePracticeSession(
         serverTimestamp(),
 
       updatedAtMs:
+        Date.now(),
+    }
+  );
+}
+
+// ======================================
+// UPDATE AI PRACTICE ANALYSIS
+// ======================================
+
+export interface PracticeAnalysisUpdate {
+  overallScore: number;
+
+  noteAccuracy: number;
+
+  timingScore: number;
+
+  audioId: string;
+
+  feedback?: string[];
+}
+
+
+export async function updatePracticeAnalysis(
+  uid: string,
+  sessionId: string,
+  analysis:
+    PracticeAnalysisUpdate
+) {
+  await updateDoc(
+    doc(
+      db,
+      "users",
+      uid,
+      "practiceSessions",
+      sessionId
+    ),
+
+    {
+      overallScore:
+        analysis.overallScore,
+
+      noteAccuracy:
+        analysis.noteAccuracy,
+
+      timingScore:
+        analysis.timingScore,
+
+      audioId:
+        analysis.audioId,
+
+      analysisFeedback:
+        analysis.feedback ??
+        [],
+
+      analysisUpdatedAt:
+        serverTimestamp(),
+
+      analysisUpdatedAtMs:
         Date.now(),
     }
   );

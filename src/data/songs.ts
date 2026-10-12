@@ -16,6 +16,8 @@ export interface Song {
 
   type: SongType;
 
+  analysisExerciseId?: string;
+
   key?: string;
   bpm?: number;
   capo?: number;

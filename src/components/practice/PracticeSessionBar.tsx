@@ -33,6 +33,8 @@ interface Props {
 
   sourceId?: string;
 
+  analysisExerciseId?: string;
+
   title: string;
 
   bpm?: number;
@@ -41,6 +43,7 @@ interface Props {
 export default function PracticeSessionBar({
   sourceType,
   sourceId,
+  analysisExerciseId,
   title,
   bpm,
 }: Props) {
@@ -154,6 +157,9 @@ export default function PracticeSessionBar({
             sourceType,
 
             sourceId,
+
+            exerciseId:
+              analysisExerciseId,
 
             title,
 

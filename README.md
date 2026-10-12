@@ -25,6 +25,22 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## AI practice analysis
+
+- `sourceId` identifies a song; it is not a backend exercise ID.
+- Set a song's `analysisExerciseId` in `src/data/songs.ts` only when a matching
+  scoring exercise exists in `backend/data/exercises.json`. Both chord and score
+  screens pass this ID to `PracticeSessionBar`, which saves it as `exerciseId`.
+- Audio uploads use the session's `exerciseId`. Missing IDs (including older
+  sessions) use free analysis: pitch detection runs, `analysis` is `null`, and the
+  UI explains that AI scoring is not supported. No scores are written to Firestore.
+- The backend currently scores only `note` events. Do not map a song to
+  `chord-progression-01`: it contains only `chord` events and is not supported
+  by the current scoring endpoint. Exercises must match the actual practice
+  material, not just have a valid ID.
+- Existing sessions keep the exercise ID captured at creation; changing a song's
+  mapping affects new sessions, not existing recordings.
+
 ## Get a fresh project
 
 When you're ready, run:

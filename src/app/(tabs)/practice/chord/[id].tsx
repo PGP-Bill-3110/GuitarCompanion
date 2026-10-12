@@ -278,6 +278,7 @@ export default function ChordSongScreen() {
         <PracticeSessionBar
           sourceType="chord"
           sourceId={song.id}
+          analysisExerciseId={song.analysisExerciseId}
           title={song.title}
         />
 

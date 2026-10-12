@@ -115,6 +115,7 @@ export default function ScoreScreen() {
       <PracticeSessionBar
         sourceType="score"
         sourceId={song.id}
+        analysisExerciseId={song.analysisExerciseId}
         title={song.title}
         bpm={song.bpm}
       />

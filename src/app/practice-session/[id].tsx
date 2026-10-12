@@ -30,6 +30,7 @@ import {
   PracticeSession,
   deletePracticeSession,
   subscribePracticeSession,
+  updatePracticeAnalysis,
   updatePracticeSession,
 } from "../../services/practiceService";
 
@@ -279,46 +280,123 @@ export default function PracticeSessionDetail() {
     }
   }
 
-  async function handleAnalyzeRecording() {
-    if (
-      !audioUri ||
-      analyzing
-    ) {
-      return;
-    }
+async function handleAnalyzeRecording() {
+  if (
+    !audioUri ||
+    !user ||
+    !session ||
+    analyzing
+  ) {
+    return;
+  }
 
-    try {
-      setAnalyzing(true);
-      setAnalysisError("");
-      setAnalysisResult(null);
+  try {
+    setAnalyzing(true);
 
-      const result =
-        await uploadPracticeAudio(
-          audioUri,
-          session?.sourceId || undefined
-        );
+    setAnalysisError("");
 
-      setAnalysisResult(result);
+    setAnalysisResult(null);
+
+
+    // =====================================
+    // 1. SEND RECORDING TO AI BACKEND
+    // =====================================
+
+    const result =
+      await uploadPracticeAudio(
+        audioUri,
+        session.exerciseId ||
+          undefined
+      );
+
+
+    console.log(
+      "Audio analysis result:",
+      result
+    );
+
+
+    // =====================================
+    // 2. SHOW RESULT IN UI
+    // =====================================
+
+    setAnalysisResult(
+      result
+    );
+
+
+    // =====================================
+    // 3. SAVE SCORES TO FIRESTORE
+    // =====================================
+
+    if (result.analysis) {
+      await updatePracticeAnalysis(
+        user.uid,
+        session.id,
+        {
+          overallScore:
+            result.analysis
+              .overallScore,
+
+          noteAccuracy:
+            result.analysis
+              .noteAccuracy,
+
+          timingScore:
+            result.analysis
+              .timingScore,
+
+          audioId:
+            result.audioId,
+
+          feedback:
+            result.feedback ??
+            [],
+        }
+      );
+
 
       console.log(
-        "Audio upload result:",
-        result
-      );
-    } catch (error) {
-      console.error(
-        "Audio analyze upload error:",
-        error
-      );
+        "Practice analysis saved to Firestore:",
+        {
+          sessionId:
+            session.id,
 
-      setAnalysisError(
-        error instanceof Error
-          ? error.message
-          : "Không thể upload audio."
+          overallScore:
+            result.analysis
+              .overallScore,
+
+          noteAccuracy:
+            result.analysis
+              .noteAccuracy,
+
+          timingScore:
+            result.analysis
+              .timingScore,
+        }
       );
-    } finally {
-      setAnalyzing(false);
     }
+
+  } catch (error) {
+
+    console.error(
+      "Audio analyze upload error:",
+      error
+    );
+
+    setAnalysisError(
+      error instanceof Error
+        ? error.message
+        : "Không thể phân tích audio."
+    );
+
+  } finally {
+
+    setAnalyzing(
+      false
+    );
   }
+}
 
   // ====================================
   // DELETE
@@ -414,6 +492,46 @@ export default function PracticeSessionDetail() {
       </View>
     );
   }
+
+const displayedAnalysis =
+  analysisResult?.analysis
+    ? {
+        overallScore:
+          analysisResult
+            .analysis
+            .overallScore,
+
+        noteAccuracy:
+          analysisResult
+            .analysis
+            .noteAccuracy,
+
+        timingScore:
+          analysisResult
+            .analysis
+            .timingScore,
+      }
+
+    : !analysisResult && session.overallScore != null
+      ? {
+          overallScore:
+            session.overallScore,
+
+          noteAccuracy:
+            session.noteAccuracy ??
+            0,
+
+          timingScore:
+            session.timingScore ??
+            0,
+        }
+
+      : null;
+
+  const displayedFeedback =
+    analysisResult
+      ? analysisResult.feedback ?? []
+      : session.analysisFeedback ?? [];
 
   return (
     <View
@@ -893,7 +1011,7 @@ export default function PracticeSessionDetail() {
           </View>
         )}
 
-        {analysisResult && (
+        {(analysisResult || displayedAnalysis) && (
           <View
             style={
               styles.analysisSuccess
@@ -916,7 +1034,9 @@ export default function PracticeSessionDetail() {
                     styles.analysisSuccessTitle
                   }
                 >
-                  Audio uploaded
+                  {analysisResult
+                    ? "Audio analyzed"
+                    : "Saved AI analysis"}
                 </Text>
 
                 <Text
@@ -924,7 +1044,11 @@ export default function PracticeSessionDetail() {
                     styles.analysisSuccessSubtitle
                   }
                 >
-                  FastAPI received your recording.
+                  {analysisResult?.analysis === null
+                    ? "Bài này chưa hỗ trợ AI scoring. Audio đã được phân tích tự do, không có điểm đánh giá."
+                    : analysisResult
+                      ? "Đã phân tích audio và tạo điểm đánh giá."
+                      : "Kết quả AI đã lưu của buổi luyện tập."}
                 </Text>
               </View>
             </View>
@@ -934,37 +1058,68 @@ export default function PracticeSessionDetail() {
                 styles.uploadInfo
               }
             >
-              <UploadInfoRow
-                label="File"
-                value={
-                  analysisResult.filename
-                }
-              />
+              {analysisResult && (
+                <UploadInfoRow
+                  label="File"
+                  value={
+                    analysisResult.filename
+                  }
+                />
+              )}
 
-              <UploadInfoRow
-                label="Duration"
-                value={formatAudioDuration(
-                  audioDurationMillis
-                )}
-              />
+              {analysisResult && (
+                <UploadInfoRow
+                  label="Duration"
+                  value={formatAudioDuration(
+                    audioDurationMillis
+                  )}
+                />
+              )}
 
-              {analysisResult.analysis && (
+              {displayedAnalysis && (
                 <>
                   <UploadInfoRow
                     label="Overall Score"
-                    value={`${analysisResult.analysis.overallScore}%`}
+                    value={`${displayedAnalysis.overallScore}%`}
                   />
 
                   <UploadInfoRow
                     label="Note Accuracy"
-                    value={`${analysisResult.analysis.noteAccuracy}%`}
+                    value={`${displayedAnalysis.noteAccuracy}%`}
                   />
 
                   <UploadInfoRow
                     label="Timing Score"
-                    value={`${analysisResult.analysis.timingScore}%`}
+                    value={`${displayedAnalysis.timingScore}%`}
                   />
                 </>
+              )}
+
+              {displayedFeedback.length > 0 && (
+                <View
+                  style={{
+                    marginTop: 12,
+                    gap: 6,
+                  }}
+                >
+                  {displayedFeedback.map(
+                    (
+                      feedback,
+                      index
+                    ) => (
+                      <Text
+                        key={index}
+                        style={{
+                          color: "#A7A7B0",
+                          fontSize: 10,
+                          lineHeight: 16,
+                        }}
+                      >
+                        • {feedback}
+                      </Text>
+                    )
+                  )}
+                </View>
               )}
             </View>
           </View>
