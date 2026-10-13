@@ -262,6 +262,9 @@ function SessionCard({
     PracticeSession;
   onPress: () => void;
 }) {
+  const hasAnalysis =
+    session.overallScore != null;
+
   return (
     <TouchableOpacity
       style={
@@ -270,68 +273,192 @@ function SessionCard({
       onPress={onPress}
       activeOpacity={0.8}
     >
+      {/* ================================= */}
+      {/* TOP ROW                           */}
+      {/* ================================= */}
+
       <View
         style={
-          styles.sessionIcon
+          styles.sessionTopRow
         }
       >
-        <Ionicons
-          name={
-            session.sourceType ===
-            "chord"
-              ? "grid-outline"
-              : "document-text-outline"
+        <View
+          style={
+            styles.sessionIcon
           }
-          size={23}
-          color="#A78BFA"
+        >
+          <Ionicons
+            name={
+              session.sourceType ===
+              "chord"
+                ? "grid-outline"
+                : "document-text-outline"
+            }
+            size={23}
+            color="#A78BFA"
+          />
+        </View>
+
+
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <Text
+            style={
+              styles.sessionTitle
+            }
+          >
+            {session.title}
+          </Text>
+
+          <Text
+            style={
+              styles.sessionMeta
+            }
+          >
+            {formatMinutes(
+              session.durationSeconds
+            )}
+
+            {session.bpm
+              ? ` • ${session.bpm} BPM`
+              : ""}
+
+            {session.selfRating
+              ? ` • ⭐ ${session.selfRating}/5`
+              : ""}
+
+            {" • "}
+
+            {formatDate(
+              session.createdAtMs
+            )}
+          </Text>
+        </View>
+
+
+        <Ionicons
+          name="chevron-forward"
+          size={18}
+          color="#666"
         />
       </View>
 
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
-        <Text
+
+      {/* ================================= */}
+      {/* AI RESULT                         */}
+      {/* ================================= */}
+
+      {hasAnalysis ? (
+        <View
           style={
-            styles.sessionTitle
+            styles.analysisRow
           }
         >
-          {session.title}
-        </Text>
+          <ScoreItem
+            label="Overall"
+            value={
+              session.overallScore ?? 0
+            }
+          />
 
-        <Text
+          <View
+            style={
+              styles.scoreDivider
+            }
+          />
+
+          <ScoreItem
+            label="Notes"
+            value={
+              session.noteAccuracy ??
+              0
+            }
+          />
+
+          <View
+            style={
+              styles.scoreDivider
+            }
+          />
+
+          <ScoreItem
+            label="Timing"
+            value={
+              session.timingScore ??
+              0
+            }
+          />
+        </View>
+      ) : (
+        <View
           style={
-            styles.sessionMeta
+            styles.notAnalyzedRow
           }
         >
-          {formatMinutes(
-            session.durationSeconds
-          )}
+          <Ionicons
+            name="sparkles-outline"
+            size={14}
+            color="#666"
+          />
 
-          {session.bpm
-            ? ` • ${session.bpm} BPM`
-            : ""}
-
-          {session.selfRating
-            ? ` • ⭐ ${session.selfRating}/5`
-            : ""}
-
-          {" • "}
-
-          {formatDate(
-            session.createdAtMs
-          )}
-        </Text>
-      </View>
-
-      <Ionicons
-        name="chevron-forward"
-        size={18}
-        color="#666"
-      />
+          <Text
+            style={
+              styles.notAnalyzedText
+            }
+          >
+            AI analysis not available
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
+}
+
+function ScoreItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <View
+      style={
+        styles.scoreItem
+      }
+    >
+      <Text
+        style={
+          styles.scoreValue
+        }
+      >
+        {formatScore(value)}%
+      </Text>
+
+      <Text
+        style={
+          styles.scoreLabel
+        }
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+function formatScore(
+  score: number
+) {
+  if (
+    Number.isInteger(score)
+  ) {
+    return String(score);
+  }
+
+  return score.toFixed(1);
 }
 
 function formatMinutes(
@@ -461,11 +588,6 @@ const styles =
     },
 
     sessionCard: {
-      flexDirection: "row",
-
-      alignItems: "center",
-
-      gap: 12,
 
       backgroundColor:
         "#17171D",
@@ -544,5 +666,82 @@ const styles =
       marginTop: 6,
 
       lineHeight: 17,
+    },
+
+    sessionTopRow: {
+      flexDirection: "row",
+
+      alignItems: "center",
+
+      gap: 12,
+    },
+
+    analysisRow: {
+      flexDirection: "row",
+
+      alignItems: "center",
+
+      marginTop: 14,
+
+      paddingTop: 13,
+
+      borderTopWidth: 1,
+
+      borderTopColor:
+        "#292930",
+    },
+
+    scoreItem: {
+      flex: 1,
+
+      alignItems: "center",
+    },
+
+    scoreValue: {
+      color: "#FFFFFF",
+
+      fontSize: 15,
+
+      fontWeight: "bold",
+    },
+
+    scoreLabel: {
+      color: "#666",
+
+      fontSize: 9,
+
+      marginTop: 3,
+    },
+
+    scoreDivider: {
+      width: 1,
+
+      height: 28,
+
+      backgroundColor:
+        "#292930",
+    },
+
+    notAnalyzedRow: {
+      flexDirection: "row",
+
+      alignItems: "center",
+
+      gap: 6,
+
+      marginTop: 12,
+
+      paddingTop: 11,
+
+      borderTopWidth: 1,
+
+      borderTopColor:
+        "#292930",
+    },
+
+    notAnalyzedText: {
+      color: "#666",
+
+      fontSize: 9,
     },
   });

@@ -151,6 +151,10 @@ export const songs: Song[] = [
 
     type: "score",
 
+
+    analysisExerciseId:
+    "c-major-scale",
+
     difficulty: "Unrated",
 
     pdfUrl: "/scores/dieu-vo-tri-nhat.pdf",
