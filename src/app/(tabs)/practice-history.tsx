@@ -28,6 +28,7 @@ import {
   PracticeStats,
   subscribePracticeSessions,
   subscribePracticeStats,
+  seedDemoPracticeSessions,
 } from "../../services/practiceService";
 
 export default function PracticeHistoryScreen() {
@@ -54,18 +55,45 @@ export default function PracticeHistoryScreen() {
       streak: 0,
     });
 
+  async function handleSeedDemoData() {
+    if (!user) {
+      return;
+    }
+
+    try {
+      await seedDemoPracticeSessions(
+        user.uid
+      );
+
+      console.log(
+        "Demo practice data created"
+      );
+    } catch (error) {
+      console.error(
+        "Seed demo data error:",
+        error
+      );
+    }
+  }
+
     // =====================================
 // AI PROGRESS SUMMARY
 // =====================================
 
 const analyzedSessions =
-  sessions.filter(
-    (session) =>
-      session.overallScore != null
-  );
+      sessions
+        .filter(
+          (session) =>
+            session.overallScore != null
+        )
+        .sort(
+          (a, b) =>
+            a.createdAtMs -
+            b.createdAtMs
+        );
 
-const analyzedCount =
-  analyzedSessions.length;
+    const analyzedCount =
+      analyzedSessions.length;
 
 const bestScore =
   analyzedCount > 0
@@ -183,6 +211,29 @@ const averageTiming =
           </View>
         </View>
 
+        <TouchableOpacity
+          style={
+            styles.demoButton
+          }
+          onPress={
+            handleSeedDemoData
+          }
+        >
+          <Ionicons
+            name="flask-outline"
+            size={17}
+            color="#FFFFFF"
+          />
+
+          <Text
+            style={
+              styles.demoButtonText
+            }
+          >
+            Generate Demo Progress
+          </Text>
+        </TouchableOpacity>
+
         <View
           style={
             styles.stats
@@ -282,6 +333,57 @@ const averageTiming =
   {stats.sessionCount}
   {" sessions analyzed"}
 </Text>
+
+{/* ================================= */}
+{/* PROGRESS CHART                    */}
+{/* ================================= */}
+
+<Text
+  style={
+    styles.sectionTitle
+  }
+>
+  Progress Over Time
+</Text>
+
+{analyzedSessions.length < 2 ? (
+  <View
+    style={
+      styles.chartEmpty
+    }
+  >
+    <Ionicons
+      name="stats-chart-outline"
+      size={32}
+      color="#666"
+    />
+
+    <Text
+      style={
+        styles.chartEmptyTitle
+      }
+    >
+      Not enough data yet
+    </Text>
+
+    <Text
+      style={
+        styles.chartEmptyText
+      }
+    >
+      Analyze at least 2
+      practice sessions to
+      see your progress.
+    </Text>
+  </View>
+) : (
+  <ProgressChart
+    sessions={
+      analyzedSessions
+    }
+  />
+)}
+
         <Text
           style={
             styles.sectionTitle
@@ -421,6 +523,136 @@ function ProgressCard({
       >
         {label}
       </Text>
+    </View>
+  );
+}
+
+function ProgressChart({
+  sessions,
+}: {
+  sessions:
+    PracticeSession[];
+}) {
+  const chartHeight = 170;
+
+  return (
+    <View
+      style={
+        styles.chartCard
+      }
+    >
+      <View
+        style={
+          styles.chartHeader
+        }
+      >
+        <View
+          style={
+            styles.chartLegend
+          }
+        >
+          <View
+            style={
+              styles.chartLegendDot
+            }
+          />
+
+          <Text
+            style={
+              styles.chartLegendText
+            }
+          >
+            Overall Score
+          </Text>
+        </View>
+
+        <Text
+          style={
+            styles.chartScaleText
+          }
+        >
+          0–100%
+        </Text>
+      </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={
+          false
+        }
+        contentContainerStyle={
+          styles.chartScrollContent
+        }
+      >
+        {sessions.map(
+          (session) => {
+            const score =
+              session.overallScore ??
+              0;
+
+            const barHeight =
+              Math.max(
+                4,
+                (
+                  score /
+                  100
+                ) *
+                  chartHeight
+              );
+
+            return (
+              <View
+                key={
+                  session.id
+                }
+                style={
+                  styles.chartColumn
+                }
+              >
+                <Text
+                  style={
+                    styles.chartValue
+                  }
+                >
+                  {formatScore(
+                    score
+                  )}%
+                </Text>
+
+                <View
+                  style={[
+                    styles.chartBarTrack,
+                    {
+                      height:
+                        chartHeight,
+                    },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.chartBar,
+                      {
+                        height:
+                          barHeight,
+                      },
+                    ]}
+                  />
+                </View>
+
+                <Text
+                  style={
+                    styles.chartDate
+                  }
+                >
+                  {formatChartDate(
+                    session.createdAtMs
+                  )}
+                </Text>
+              </View>
+            );
+          }
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -619,6 +851,19 @@ function formatScore(
   }
 
   return score.toFixed(1);
+}
+
+function formatChartDate(
+  timestamp: number
+) {
+  const date =
+    new Date(
+      timestamp
+    );
+
+  return `${date.getDate()}/${
+    date.getMonth() + 1
+  }`;
 }
 
 function formatMinutes(
@@ -953,5 +1198,177 @@ const styles =
       marginTop: 9,
 
       textAlign: "right",
+    },
+
+    chartCard: {
+      backgroundColor:
+        "#17171D",
+
+      borderRadius: 18,
+
+      padding: 16,
+    },
+
+    chartHeader: {
+      flexDirection: "row",
+
+      alignItems: "center",
+
+      justifyContent:
+        "space-between",
+
+      marginBottom: 14,
+    },
+
+    chartLegend: {
+      flexDirection: "row",
+
+      alignItems: "center",
+
+      gap: 7,
+    },
+
+    chartLegendDot: {
+      width: 8,
+
+      height: 8,
+
+      borderRadius: 4,
+
+      backgroundColor:
+        "#7C3AED",
+    },
+
+    chartLegendText: {
+      color: "#AAAAAA",
+
+      fontSize: 10,
+
+      fontWeight: "600",
+    },
+
+    chartScaleText: {
+      color: "#555",
+
+      fontSize: 9,
+    },
+
+    chartScrollContent: {
+      alignItems: "flex-end",
+
+      gap: 12,
+
+      paddingRight: 6,
+    },
+
+    chartColumn: {
+      width: 52,
+
+      alignItems: "center",
+
+      justifyContent:
+        "flex-end",
+    },
+
+    chartValue: {
+      color: "#BBBBBB",
+
+      fontSize: 9,
+
+      marginBottom: 6,
+    },
+
+    chartBarTrack: {
+      width: 30,
+
+      backgroundColor:
+        "#202027",
+
+      borderRadius: 7,
+
+      justifyContent:
+        "flex-end",
+
+      overflow: "hidden",
+    },
+
+    chartBar: {
+      width: "100%",
+
+      minHeight: 4,
+
+      backgroundColor:
+        "#7C3AED",
+
+      borderRadius: 7,
+    },
+
+    chartDate: {
+      color: "#666",
+
+      fontSize: 9,
+
+      marginTop: 7,
+    },
+
+    chartEmpty: {
+      backgroundColor:
+        "#17171D",
+
+      borderRadius: 18,
+
+      paddingVertical: 28,
+
+      paddingHorizontal: 20,
+
+      alignItems: "center",
+    },
+
+    chartEmptyTitle: {
+      color: "#FFFFFF",
+
+      fontSize: 13,
+
+      fontWeight: "bold",
+
+      marginTop: 10,
+    },
+
+    chartEmptyText: {
+      color: "#666",
+
+      fontSize: 10,
+
+      lineHeight: 16,
+
+      textAlign: "center",
+
+      marginTop: 5,
+    },
+
+    demoButton: {
+      flexDirection: "row",
+
+      alignItems: "center",
+      justifyContent: "center",
+
+      gap: 8,
+
+      backgroundColor:
+        "#7C3AED",
+
+      borderRadius: 13,
+
+      paddingVertical: 11,
+
+      marginBottom: 20,
+    },
+
+    demoButtonText: {
+      color: "#FFFFFF",
+
+      fontSize: 11,
+
+      fontWeight: "bold",
     },
   });

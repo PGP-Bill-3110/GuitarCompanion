@@ -577,3 +577,130 @@ export async function deletePracticeSession(
     )
   );
 }
+
+// ======================================
+// DEMO PRACTICE DATA
+// ======================================
+
+export async function seedDemoPracticeSessions(
+  uid: string
+) {
+  const now = Date.now();
+
+  const demoSessions = [
+    {
+      daysAgo: 6,
+      overallScore: 32,
+      noteAccuracy: 38,
+      timingScore: 26,
+    },
+    {
+      daysAgo: 5,
+      overallScore: 41,
+      noteAccuracy: 47,
+      timingScore: 35,
+    },
+    {
+      daysAgo: 4,
+      overallScore: 49,
+      noteAccuracy: 55,
+      timingScore: 43,
+    },
+    {
+      daysAgo: 3,
+      overallScore: 58,
+      noteAccuracy: 64,
+      timingScore: 52,
+    },
+    {
+      daysAgo: 2,
+      overallScore: 66,
+      noteAccuracy: 72,
+      timingScore: 60,
+    },
+    {
+      daysAgo: 1,
+      overallScore: 74,
+      noteAccuracy: 81,
+      timingScore: 67,
+    },
+    {
+      daysAgo: 0,
+      overallScore: 82,
+      noteAccuracy: 88,
+      timingScore: 76,
+    },
+  ];
+
+  for (const demo of demoSessions) {
+    const createdAtMs =
+      now -
+      demo.daysAgo *
+        24 *
+        60 *
+        60 *
+        1000;
+
+    await addDoc(
+      collection(
+        db,
+        "users",
+        uid,
+        "practiceSessions"
+      ),
+      {
+        userId: uid,
+
+        sourceType: "score",
+
+        sourceId:
+          "demo-c-major-scale",
+
+        exerciseId:
+          "c-major-scale",
+
+        title:
+          "C Major Scale - Demo",
+
+        durationSeconds:
+          60 + Math.floor(
+            Math.random() * 60
+          ),
+
+        bpm: 60,
+
+        selfRating: null,
+
+        focusArea:
+          "Scales",
+
+        notes:
+          "Demo progress data",
+
+        overallScore:
+          demo.overallScore,
+
+        noteAccuracy:
+          demo.noteAccuracy,
+
+        timingScore:
+          demo.timingScore,
+
+        audioId:
+          `demo-${createdAtMs}`,
+
+        analysisFeedback: [
+          "Demo AI feedback",
+        ],
+
+        analysisUpdatedAtMs:
+          createdAtMs,
+
+        createdAt:
+          serverTimestamp(),
+
+        createdAtMs,
+      }
+    );
+  }
+}
