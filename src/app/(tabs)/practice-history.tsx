@@ -54,6 +54,62 @@ export default function PracticeHistoryScreen() {
       streak: 0,
     });
 
+    // =====================================
+// AI PROGRESS SUMMARY
+// =====================================
+
+const analyzedSessions =
+  sessions.filter(
+    (session) =>
+      session.overallScore != null
+  );
+
+const analyzedCount =
+  analyzedSessions.length;
+
+const bestScore =
+  analyzedCount > 0
+    ? Math.max(
+        ...analyzedSessions.map(
+          (session) =>
+            session.overallScore ?? 0
+        )
+      )
+    : null;
+
+const averageOverall =
+  analyzedCount > 0
+    ? analyzedSessions.reduce(
+        (sum, session) =>
+          sum +
+          (session.overallScore ?? 0),
+        0
+      ) /
+      analyzedCount
+    : null;
+
+const averageNoteAccuracy =
+  analyzedCount > 0
+    ? analyzedSessions.reduce(
+        (sum, session) =>
+          sum +
+          (session.noteAccuracy ?? 0),
+        0
+      ) /
+      analyzedCount
+    : null;
+
+const averageTiming =
+  analyzedCount > 0
+    ? analyzedSessions.reduce(
+        (sum, session) =>
+          sum +
+          (session.timingScore ?? 0),
+        0
+      ) /
+      analyzedCount
+    : null;
+
   useEffect(() => {
     if (!user) {
       return;
@@ -150,7 +206,82 @@ export default function PracticeHistoryScreen() {
             icon="musical-notes"
           />
         </View>
+{/* ================================= */}
+{/* PROGRESS SUMMARY                  */}
+{/* ================================= */}
 
+<Text
+  style={
+    styles.sectionTitle
+  }
+>
+  Progress Summary
+</Text>
+
+<View
+  style={
+    styles.progressGrid
+  }
+>
+  <ProgressCard
+    label="Best Score"
+    value={
+      bestScore != null
+        ? `${formatScore(
+            bestScore
+          )}%`
+        : "—"
+    }
+    icon="trophy-outline"
+  />
+
+  <ProgressCard
+    label="Average Score"
+    value={
+      averageOverall != null
+        ? `${formatScore(
+            averageOverall
+          )}%`
+        : "—"
+    }
+    icon="stats-chart-outline"
+  />
+
+  <ProgressCard
+    label="Note Accuracy"
+    value={
+      averageNoteAccuracy != null
+        ? `${formatScore(
+            averageNoteAccuracy
+          )}%`
+        : "—"
+    }
+    icon="musical-note-outline"
+  />
+
+  <ProgressCard
+    label="Timing"
+    value={
+      averageTiming != null
+        ? `${formatScore(
+            averageTiming
+          )}%`
+        : "—"
+    }
+    icon="time-outline"
+  />
+</View>
+
+<Text
+  style={
+    styles.analyzedText
+  }
+>
+  {analyzedCount}
+  {" / "}
+  {stats.sessionCount}
+  {" sessions analyzed"}
+</Text>
         <Text
           style={
             styles.sectionTitle
@@ -254,6 +385,46 @@ function Stat({
   );
 }
 
+function ProgressCard({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: any;
+}) {
+  return (
+    <View
+      style={
+        styles.progressCard
+      }
+    >
+      <Ionicons
+        name={icon}
+        size={19}
+        color="#A78BFA"
+      />
+
+      <Text
+        style={
+          styles.progressValue
+        }
+      >
+        {value}
+      </Text>
+
+      <Text
+        style={
+          styles.progressLabel
+        }
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
+
 function SessionCard({
   session,
   onPress,
@@ -273,10 +444,6 @@ function SessionCard({
       onPress={onPress}
       activeOpacity={0.8}
     >
-      {/* ================================= */}
-      {/* TOP ROW                           */}
-      {/* ================================= */}
-
       <View
         style={
           styles.sessionTopRow
@@ -298,7 +465,6 @@ function SessionCard({
             color="#A78BFA"
           />
         </View>
-
 
         <View
           style={{
@@ -338,7 +504,6 @@ function SessionCard({
           </Text>
         </View>
 
-
         <Ionicons
           name="chevron-forward"
           size={18}
@@ -346,21 +511,16 @@ function SessionCard({
         />
       </View>
 
-
-      {/* ================================= */}
-      {/* AI RESULT                         */}
-      {/* ================================= */}
-
       {hasAnalysis ? (
         <View
           style={
             styles.analysisRow
           }
         >
-          <ScoreItem
+          <SessionScore
             label="Overall"
             value={
-              session.overallScore ?? 0
+              session.overallScore!
             }
           />
 
@@ -370,7 +530,7 @@ function SessionCard({
             }
           />
 
-          <ScoreItem
+          <SessionScore
             label="Notes"
             value={
               session.noteAccuracy ??
@@ -384,7 +544,7 @@ function SessionCard({
             }
           />
 
-          <ScoreItem
+          <SessionScore
             label="Timing"
             value={
               session.timingScore ??
@@ -417,7 +577,7 @@ function SessionCard({
   );
 }
 
-function ScoreItem({
+function SessionScore({
   label,
   value,
 }: {
@@ -588,7 +748,6 @@ const styles =
     },
 
     sessionCard: {
-
       backgroundColor:
         "#17171D",
 
@@ -596,7 +755,7 @@ const styles =
 
       padding: 14,
 
-      marginBottom: 9,
+      marginBottom: 10,
     },
 
     sessionIcon: {
@@ -743,5 +902,56 @@ const styles =
       color: "#666",
 
       fontSize: 9,
+    },
+
+    progressGrid: {
+      flexDirection: "row",
+
+      flexWrap: "wrap",
+
+      gap: 10,
+    },
+
+    progressCard: {
+      width: "48%",
+
+      backgroundColor:
+        "#17171D",
+
+      borderRadius: 16,
+
+      paddingVertical: 16,
+
+      paddingHorizontal: 14,
+
+      alignItems: "center",
+    },
+
+    progressValue: {
+      color: "#FFFFFF",
+
+      fontSize: 18,
+
+      fontWeight: "bold",
+
+      marginTop: 6,
+    },
+
+    progressLabel: {
+      color: "#666",
+
+      fontSize: 9,
+
+      marginTop: 3,
+    },
+
+    analyzedText: {
+      color: "#666",
+
+      fontSize: 10,
+
+      marginTop: 9,
+
+      textAlign: "right",
     },
   });
