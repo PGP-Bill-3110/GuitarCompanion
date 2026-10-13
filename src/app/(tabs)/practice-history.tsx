@@ -55,24 +55,41 @@ export default function PracticeHistoryScreen() {
       streak: 0,
     });
 
-  async function handleSeedDemoData() {
-    if (!user) {
+  const [
+    seedingDemo,
+    setSeedingDemo,
+  ] = useState(false);
+
+  const [
+    chartMetric,
+    setChartMetric,
+  ] = useState<
+    "overall" |
+    "notes" |
+    "timing"
+  >("overall");
+
+  async function handleSeedDemo() {
+    if (
+      !user ||
+      seedingDemo
+    ) {
       return;
     }
 
     try {
+      setSeedingDemo(true);
+
       await seedDemoPracticeSessions(
         user.uid
       );
-
-      console.log(
-        "Demo practice data created"
-      );
     } catch (error) {
       console.error(
-        "Seed demo data error:",
+        "Seed demo error:",
         error
       );
+    } finally {
+      setSeedingDemo(false);
     }
   }
 
@@ -215,8 +232,11 @@ const averageTiming =
           style={
             styles.demoButton
           }
+          disabled={
+            seedingDemo
+          }
           onPress={
-            handleSeedDemoData
+            handleSeedDemo
           }
         >
           <Ionicons
@@ -230,7 +250,9 @@ const averageTiming =
               styles.demoButtonText
             }
           >
-            Generate Demo Progress
+            {seedingDemo
+              ? "Generating..."
+              : "Generate Demo Progress"}
           </Text>
         </TouchableOpacity>
 
@@ -346,7 +368,53 @@ const averageTiming =
   Progress Over Time
 </Text>
 
-{analyzedSessions.length < 2 ? (
+<View
+  style={
+    styles.metricTabs
+  }
+>
+  <MetricTab
+    label="Overall"
+    active={
+      chartMetric ===
+      "overall"
+    }
+    onPress={() =>
+      setChartMetric(
+        "overall"
+      )
+    }
+  />
+
+  <MetricTab
+    label="Notes"
+    active={
+      chartMetric ===
+      "notes"
+    }
+    onPress={() =>
+      setChartMetric(
+        "notes"
+      )
+    }
+  />
+
+  <MetricTab
+    label="Timing"
+    active={
+      chartMetric ===
+      "timing"
+    }
+    onPress={() =>
+      setChartMetric(
+        "timing"
+      )
+    }
+  />
+</View>
+
+{analyzedSessions.length <
+2 ? (
   <View
     style={
       styles.chartEmpty
@@ -354,17 +422,9 @@ const averageTiming =
   >
     <Ionicons
       name="stats-chart-outline"
-      size={32}
+      size={30}
       color="#666"
     />
-
-    <Text
-      style={
-        styles.chartEmptyTitle
-      }
-    >
-      Not enough data yet
-    </Text>
 
     <Text
       style={
@@ -372,14 +432,16 @@ const averageTiming =
       }
     >
       Analyze at least 2
-      practice sessions to
-      see your progress.
+      sessions to see progress.
     </Text>
   </View>
 ) : (
   <ProgressChart
     sessions={
       analyzedSessions
+    }
+    metric={
+      chartMetric
     }
   />
 )}
@@ -527,13 +589,78 @@ function ProgressCard({
   );
 }
 
+function MetricTab({
+  label,
+  active,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity
+      style={[
+        styles.metricTab,
+        active &&
+          styles.metricTabActive,
+      ]}
+      onPress={onPress}
+    >
+      <Text
+        style={[
+          styles.metricTabText,
+          active &&
+            styles.metricTabTextActive,
+        ]}
+      >
+        {label}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
 function ProgressChart({
   sessions,
+  metric,
 }: {
   sessions:
     PracticeSession[];
+
+  metric:
+    | "overall"
+    | "notes"
+    | "timing";
 }) {
   const chartHeight = 170;
+
+  function getScore(
+    session:
+      PracticeSession
+  ) {
+    if (
+      metric === "notes"
+    ) {
+      return (
+        session.noteAccuracy ??
+        0
+      );
+    }
+
+    if (
+      metric === "timing"
+    ) {
+      return (
+        session.timingScore ??
+        0
+      );
+    }
+
+    return (
+      session.overallScore ??
+      0
+    );
+  }
 
   return (
     <View
@@ -541,62 +668,27 @@ function ProgressChart({
         styles.chartCard
       }
     >
-      <View
-        style={
-          styles.chartHeader
-        }
-      >
-        <View
-          style={
-            styles.chartLegend
-          }
-        >
-          <View
-            style={
-              styles.chartLegendDot
-            }
-          />
-
-          <Text
-            style={
-              styles.chartLegendText
-            }
-          >
-            Overall Score
-          </Text>
-        </View>
-
-        <Text
-          style={
-            styles.chartScaleText
-          }
-        >
-          0–100%
-        </Text>
-      </View>
-
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={
           false
         }
         contentContainerStyle={
-          styles.chartScrollContent
+          styles.chartContent
         }
       >
         {sessions.map(
           (session) => {
             const score =
-              session.overallScore ??
-              0;
+              getScore(
+                session
+              );
 
-            const barHeight =
+            const height =
               Math.max(
                 4,
-                (
-                  score /
-                  100
-                ) *
+                score /
+                  100 *
                   chartHeight
               );
 
@@ -621,7 +713,7 @@ function ProgressChart({
 
                 <View
                   style={[
-                    styles.chartBarTrack,
+                    styles.chartTrack,
                     {
                       height:
                         chartHeight,
@@ -632,8 +724,7 @@ function ProgressChart({
                     style={[
                       styles.chartBar,
                       {
-                        height:
-                          barHeight,
+                        height,
                       },
                     ]}
                   />
@@ -1200,6 +1291,70 @@ const styles =
       textAlign: "right",
     },
 
+    demoButton: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 8,
+
+      backgroundColor:
+        "#251B3D",
+
+      borderRadius: 13,
+
+      paddingVertical: 11,
+
+      marginBottom: 10,
+    },
+
+    demoButtonText: {
+      color: "#A78BFA",
+
+      fontSize: 11,
+
+      fontWeight: "bold",
+    },
+
+    metricTabs: {
+      flexDirection: "row",
+
+      backgroundColor:
+        "#17171D",
+
+      borderRadius: 14,
+
+      padding: 4,
+
+      marginBottom: 12,
+    },
+
+    metricTab: {
+      flex: 1,
+
+      paddingVertical: 9,
+
+      alignItems: "center",
+
+      borderRadius: 10,
+    },
+
+    metricTabActive: {
+      backgroundColor:
+        "#7C3AED",
+    },
+
+    metricTabText: {
+      color: "#777",
+
+      fontSize: 10,
+
+      fontWeight: "600",
+    },
+
+    metricTabTextActive: {
+      color: "#FFFFFF",
+    },
+
     chartCard: {
       backgroundColor:
         "#17171D",
@@ -1209,65 +1364,20 @@ const styles =
       padding: 16,
     },
 
-    chartHeader: {
-      flexDirection: "row",
-
-      alignItems: "center",
-
-      justifyContent:
-        "space-between",
-
-      marginBottom: 14,
-    },
-
-    chartLegend: {
-      flexDirection: "row",
-
-      alignItems: "center",
-
-      gap: 7,
-    },
-
-    chartLegendDot: {
-      width: 8,
-
-      height: 8,
-
-      borderRadius: 4,
-
-      backgroundColor:
-        "#7C3AED",
-    },
-
-    chartLegendText: {
-      color: "#AAAAAA",
-
-      fontSize: 10,
-
-      fontWeight: "600",
-    },
-
-    chartScaleText: {
-      color: "#555",
-
-      fontSize: 9,
-    },
-
-    chartScrollContent: {
-      alignItems: "flex-end",
+    chartContent: {
+      alignItems:
+        "flex-end",
 
       gap: 12,
 
-      paddingRight: 6,
+      paddingRight: 8,
     },
 
     chartColumn: {
-      width: 52,
+      width: 54,
 
-      alignItems: "center",
-
-      justifyContent:
-        "flex-end",
+      alignItems:
+        "center",
     },
 
     chartValue: {
@@ -1278,11 +1388,11 @@ const styles =
       marginBottom: 6,
     },
 
-    chartBarTrack: {
+    chartTrack: {
       width: 30,
 
       backgroundColor:
-        "#202027",
+        "#222229",
 
       borderRadius: 7,
 
@@ -1294,8 +1404,6 @@ const styles =
 
     chartBar: {
       width: "100%",
-
-      minHeight: 4,
 
       backgroundColor:
         "#7C3AED",
@@ -1317,21 +1425,10 @@ const styles =
 
       borderRadius: 18,
 
-      paddingVertical: 28,
+      padding: 30,
 
-      paddingHorizontal: 20,
-
-      alignItems: "center",
-    },
-
-    chartEmptyTitle: {
-      color: "#FFFFFF",
-
-      fontSize: 13,
-
-      fontWeight: "bold",
-
-      marginTop: 10,
+      alignItems:
+        "center",
     },
 
     chartEmptyText: {
@@ -1339,36 +1436,8 @@ const styles =
 
       fontSize: 10,
 
-      lineHeight: 16,
+      marginTop: 8,
 
       textAlign: "center",
-
-      marginTop: 5,
-    },
-
-    demoButton: {
-      flexDirection: "row",
-
-      alignItems: "center",
-      justifyContent: "center",
-
-      gap: 8,
-
-      backgroundColor:
-        "#7C3AED",
-
-      borderRadius: 13,
-
-      paddingVertical: 11,
-
-      marginBottom: 20,
-    },
-
-    demoButtonText: {
-      color: "#FFFFFF",
-
-      fontSize: 11,
-
-      fontWeight: "bold",
     },
   });

@@ -9,6 +9,7 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import {
@@ -71,6 +72,7 @@ export interface PracticeSession {
   analysisUpdatedAtMs:
     number | null;
 
+  isDemo?: boolean;
 
   createdAtMs: number;
 }
@@ -560,6 +562,113 @@ export async function updatePracticeAnalysis(
 }
 
 // ======================================
+// DEMO PRACTICE DATA
+// ======================================
+
+export async function seedDemoPracticeSessions(
+  uid: string
+) {
+  const now = Date.now();
+
+  const demos = [
+    [6, 34, 40, 28],
+    [5, 42, 48, 36],
+    [4, 51, 58, 44],
+    [3, 59, 65, 53],
+    [2, 68, 74, 62],
+    [1, 76, 82, 70],
+    [0, 84, 90, 78],
+  ];
+
+  for (
+    let index = 0;
+    index < demos.length;
+    index++
+  ) {
+    const [
+      daysAgo,
+      overallScore,
+      noteAccuracy,
+      timingScore,
+    ] = demos[index];
+
+    const createdAtMs =
+      now -
+      daysAgo *
+        24 *
+        60 *
+        60 *
+        1000;
+
+    await setDoc(
+      doc(
+        db,
+        "users",
+        uid,
+        "practiceSessions",
+        `demo-progress-${index + 1}`
+      ),
+      {
+        userId: uid,
+
+        sourceType: "score",
+
+        sourceId:
+          "demo-c-major-scale",
+
+        exerciseId:
+          "c-major-scale",
+
+        title:
+          "C Major Scale",
+
+        durationSeconds:
+          60 + index * 10,
+
+        bpm: 60,
+
+        selfRating: null,
+
+        focusArea:
+          "Scales",
+
+        notes:
+          "Demo practice session",
+
+        overallScore,
+
+        noteAccuracy,
+
+        timingScore,
+
+        audioId:
+          `demo-audio-${index + 1}`,
+
+        analysisFeedback: [
+          "Demo progress data",
+        ],
+
+        analysisUpdatedAt:
+          serverTimestamp(),
+
+        analysisUpdatedAtMs:
+          createdAtMs,
+
+        createdAt:
+          serverTimestamp(),
+
+        createdAtMs,
+
+        isDemo: true,
+      },
+      {
+        merge: true,
+      }
+    );
+  }
+}
+
+// ======================================
 // DELETE SESSION
 // ======================================
 
@@ -576,131 +685,4 @@ export async function deletePracticeSession(
       sessionId
     )
   );
-}
-
-// ======================================
-// DEMO PRACTICE DATA
-// ======================================
-
-export async function seedDemoPracticeSessions(
-  uid: string
-) {
-  const now = Date.now();
-
-  const demoSessions = [
-    {
-      daysAgo: 6,
-      overallScore: 32,
-      noteAccuracy: 38,
-      timingScore: 26,
-    },
-    {
-      daysAgo: 5,
-      overallScore: 41,
-      noteAccuracy: 47,
-      timingScore: 35,
-    },
-    {
-      daysAgo: 4,
-      overallScore: 49,
-      noteAccuracy: 55,
-      timingScore: 43,
-    },
-    {
-      daysAgo: 3,
-      overallScore: 58,
-      noteAccuracy: 64,
-      timingScore: 52,
-    },
-    {
-      daysAgo: 2,
-      overallScore: 66,
-      noteAccuracy: 72,
-      timingScore: 60,
-    },
-    {
-      daysAgo: 1,
-      overallScore: 74,
-      noteAccuracy: 81,
-      timingScore: 67,
-    },
-    {
-      daysAgo: 0,
-      overallScore: 82,
-      noteAccuracy: 88,
-      timingScore: 76,
-    },
-  ];
-
-  for (const demo of demoSessions) {
-    const createdAtMs =
-      now -
-      demo.daysAgo *
-        24 *
-        60 *
-        60 *
-        1000;
-
-    await addDoc(
-      collection(
-        db,
-        "users",
-        uid,
-        "practiceSessions"
-      ),
-      {
-        userId: uid,
-
-        sourceType: "score",
-
-        sourceId:
-          "demo-c-major-scale",
-
-        exerciseId:
-          "c-major-scale",
-
-        title:
-          "C Major Scale - Demo",
-
-        durationSeconds:
-          60 + Math.floor(
-            Math.random() * 60
-          ),
-
-        bpm: 60,
-
-        selfRating: null,
-
-        focusArea:
-          "Scales",
-
-        notes:
-          "Demo progress data",
-
-        overallScore:
-          demo.overallScore,
-
-        noteAccuracy:
-          demo.noteAccuracy,
-
-        timingScore:
-          demo.timingScore,
-
-        audioId:
-          `demo-${createdAtMs}`,
-
-        analysisFeedback: [
-          "Demo AI feedback",
-        ],
-
-        analysisUpdatedAtMs:
-          createdAtMs,
-
-        createdAt:
-          serverTimestamp(),
-
-        createdAtMs,
-      }
-    );
-  }
 }
