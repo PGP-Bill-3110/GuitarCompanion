@@ -1,4 +1,5 @@
 import {
+  type ComponentProps,
   useEffect,
   useState,
 } from "react";
@@ -154,7 +155,60 @@ const averageTiming =
       ) /
       analyzedCount
     : null;
+// =====================================
+// PERSONAL BEST / IMPROVEMENT
+// =====================================
 
+const latestAnalyzed =
+  analyzedCount > 0
+    ? analyzedSessions[
+        analyzedCount - 1
+      ]
+    : null;
+
+const previousAnalyzed =
+  analyzedCount > 1
+    ? analyzedSessions[
+        analyzedCount - 2
+      ]
+    : null;
+
+const latestScore =
+  latestAnalyzed?.overallScore ??
+  null;
+
+const previousScore =
+  previousAnalyzed?.overallScore ??
+  null;
+
+const improvement =
+  latestScore != null &&
+  previousScore != null
+    ? latestScore -
+      previousScore
+    : null;
+
+const previousBest =
+  analyzedCount > 1
+    ? Math.max(
+        ...analyzedSessions
+          .slice(
+            0,
+            -1
+          )
+          .map(
+            (session) =>
+              session.overallScore ??
+              0
+          )
+      )
+    : null;
+
+const isNewPersonalBest =
+  latestScore != null &&
+  previousBest != null &&
+  latestScore >
+    previousBest;
   useEffect(() => {
     if (!user) {
       return;
@@ -446,6 +500,109 @@ const averageTiming =
   />
 )}
 
+        <Text style={styles.sectionTitle}>
+          Achievements
+        </Text>
+
+        <View style={styles.achievementCard}>
+          <View style={styles.achievementIcon}>
+            <Ionicons
+              name="trophy-outline"
+              size={24}
+              color="#A78BFA"
+            />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={styles.achievementTitle}>
+              Personal Best
+            </Text>
+
+            <Text style={styles.achievementValue}>
+              {bestScore != null
+                ? `${formatScore(bestScore)}%`
+                : "—"}
+            </Text>
+
+            <Text style={styles.achievementDescription}>
+              Highest AI practice score recorded so far.
+            </Text>
+          </View>
+        </View>
+
+        {improvement != null && (
+          <View style={styles.improvementCard}>
+            <Ionicons
+              name={
+                improvement >= 0
+                  ? "trending-up-outline"
+                  : "trending-down-outline"
+              }
+              size={21}
+              color={improvement >= 0 ? "#4ADE80" : "#F87171"}
+            />
+
+            <View style={{ flex: 1 }}>
+              <Text style={styles.improvementTitle}>
+                Latest Progress
+              </Text>
+
+              <Text
+                style={[
+                  styles.improvementValue,
+                  improvement >= 0
+                    ? styles.improvementPositive
+                    : styles.improvementNegative,
+                ]}
+              >
+                {improvement >= 0 ? "+" : ""}
+                {formatScore(improvement)}%
+              </Text>
+
+              <Text style={styles.improvementDescription}>
+                Compared with your previous analyzed session.
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {isNewPersonalBest && (
+          <View style={styles.personalBestBadge}>
+            <Ionicons
+              name="sparkles"
+              size={17}
+              color="#FACC15"
+            />
+
+            <Text style={styles.personalBestBadgeText}>
+              New Personal Best!
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.badgeGrid}>
+          <AchievementBadge
+            icon="sparkles-outline"
+            title="First Analysis"
+            unlocked={analyzedCount >= 1}
+          />
+          <AchievementBadge
+            icon="musical-note-outline"
+            title="50% Score"
+            unlocked={bestScore != null && bestScore >= 50}
+          />
+          <AchievementBadge
+            icon="ribbon-outline"
+            title="70% Score"
+            unlocked={bestScore != null && bestScore >= 70}
+          />
+          <AchievementBadge
+            icon="trophy-outline"
+            title="80% Score"
+            unlocked={bestScore != null && bestScore >= 80}
+          />
+        </View>
+
         <Text
           style={
             styles.sectionTitle
@@ -617,6 +774,44 @@ function MetricTab({
         {label}
       </Text>
     </TouchableOpacity>
+  );
+}
+
+function AchievementBadge({
+  icon,
+  title,
+  unlocked,
+}: {
+  icon: ComponentProps<typeof Ionicons>["name"];
+  title: string;
+  unlocked: boolean;
+}) {
+  return (
+    <View
+      style={[
+        styles.badgeCard,
+        !unlocked && styles.badgeCardLocked,
+      ]}
+    >
+      <Ionicons
+        name={unlocked ? icon : "lock-closed-outline"}
+        size={20}
+        color={unlocked ? "#A78BFA" : "#555"}
+      />
+
+      <Text
+        style={[
+          styles.badgeTitle,
+          !unlocked && styles.badgeTitleLocked,
+        ]}
+      >
+        {title}
+      </Text>
+
+      <Text style={styles.badgeStatus}>
+        {unlocked ? "Unlocked" : "Locked"}
+      </Text>
+    </View>
   );
 }
 
@@ -1081,6 +1276,132 @@ const styles =
 
       marginTop: 27,
       marginBottom: 13,
+    },
+
+    achievementCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      backgroundColor: "#17171D",
+      borderRadius: 17,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: "#312747",
+    },
+
+    achievementIcon: {
+      width: 50,
+      height: 50,
+      borderRadius: 15,
+      backgroundColor: "#251B3D",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+
+    achievementTitle: {
+      color: "#AAAAAA",
+      fontSize: 10,
+    },
+
+    achievementValue: {
+      color: "#FFFFFF",
+      fontSize: 23,
+      fontWeight: "bold",
+      marginTop: 2,
+    },
+
+    achievementDescription: {
+      color: "#666",
+      fontSize: 9,
+      marginTop: 3,
+    },
+
+    improvementCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      backgroundColor: "#17171D",
+      borderRadius: 15,
+      padding: 14,
+      marginTop: 10,
+    },
+
+    improvementTitle: {
+      color: "#AAAAAA",
+      fontSize: 10,
+    },
+
+    improvementValue: {
+      fontSize: 17,
+      fontWeight: "bold",
+      marginTop: 2,
+    },
+
+    improvementPositive: {
+      color: "#4ADE80",
+    },
+
+    improvementNegative: {
+      color: "#F87171",
+    },
+
+    improvementDescription: {
+      color: "#666",
+      fontSize: 9,
+      marginTop: 2,
+    },
+
+    personalBestBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 7,
+      backgroundColor: "#2A2412",
+      borderRadius: 12,
+      paddingVertical: 10,
+      marginTop: 10,
+    },
+
+    personalBestBadgeText: {
+      color: "#FACC15",
+      fontSize: 11,
+      fontWeight: "bold",
+    },
+
+    badgeGrid: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 10,
+      marginTop: 10,
+    },
+
+    badgeCard: {
+      width: "48%",
+      backgroundColor: "#17171D",
+      borderRadius: 14,
+      paddingVertical: 14,
+      alignItems: "center",
+    },
+
+    badgeCardLocked: {
+      opacity: 0.45,
+    },
+
+    badgeTitle: {
+      color: "#FFFFFF",
+      fontSize: 10,
+      fontWeight: "600",
+      marginTop: 6,
+    },
+
+    badgeTitleLocked: {
+      color: "#777",
+    },
+
+    badgeStatus: {
+      color: "#666",
+      fontSize: 8,
+      marginTop: 3,
     },
 
     sessionCard: {
