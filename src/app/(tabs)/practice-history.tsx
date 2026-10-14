@@ -209,6 +209,37 @@ const isNewPersonalBest =
   previousBest != null &&
   latestScore >
     previousBest;
+
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  const day = startOfWeek.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+
+  startOfWeek.setDate(startOfWeek.getDate() + diffToMonday);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const weeklySessions = sessions.filter(
+    (session) => session.createdAtMs >= startOfWeek.getTime()
+  );
+  const weeklyAnalyzed = weeklySessions.filter(
+    (session) => session.overallScore != null
+  );
+  const practiceChallengeProgress = Math.min(weeklySessions.length, 3);
+  const analyzeChallengeProgress = Math.min(weeklyAnalyzed.length, 2);
+  const practiceChallengeDone = practiceChallengeProgress >= 3;
+  const analyzeChallengeDone = analyzeChallengeProgress >= 2;
+  const scoreChallengeDone = weeklyAnalyzed.some(
+    (session) => (session.overallScore ?? 0) >= 70
+  );
+
+  const sessionXP = sessions.length * 10;
+  const analysisXP = analyzedCount * 15;
+  const challengeXP =
+    (practiceChallengeDone ? 50 : 0) +
+    (analyzeChallengeDone ? 75 : 0) +
+    (scoreChallengeDone ? 100 : 0);
+  const totalXP = sessionXP + analysisXP + challengeXP;
+
   useEffect(() => {
     if (!user) {
       return;
@@ -333,6 +364,7 @@ const isNewPersonalBest =
             icon="musical-notes"
           />
         </View>
+
 {/* ================================= */}
 {/* PROGRESS SUMMARY                  */}
 {/* ================================= */}
@@ -499,6 +531,62 @@ const isNewPersonalBest =
     }
   />
 )}
+
+        <Text style={styles.sectionTitle}>
+          XP Progress
+        </Text>
+
+        <View style={styles.xpCard}>
+          <View style={styles.xpIcon}>
+            <Ionicons name="flash" size={24} color="#FACC15" />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={styles.xpLabel}>Total XP</Text>
+            <Text style={styles.xpValue}>{totalXP} XP</Text>
+            <Text style={styles.xpBreakdown}>
+              {sessionXP} practice
+              {" • "}
+              {analysisXP} AI
+              {" • "}
+              {challengeXP} challenges
+            </Text>
+          </View>
+        </View>
+
+        <Text style={styles.sectionTitle}>
+          Weekly Challenges
+        </Text>
+
+        <View style={styles.challengeContainer}>
+          <WeeklyChallengeCard
+            icon="calendar-outline"
+            title="Practice Regularly"
+            description="Complete 3 practice sessions this week"
+            progress={practiceChallengeProgress}
+            target={3}
+            xp={50}
+            completed={practiceChallengeDone}
+          />
+          <WeeklyChallengeCard
+            icon="sparkles-outline"
+            title="Use AI Coach"
+            description="Analyze 2 practice sessions"
+            progress={analyzeChallengeProgress}
+            target={2}
+            xp={75}
+            completed={analyzeChallengeDone}
+          />
+          <WeeklyChallengeCard
+            icon="trophy-outline"
+            title="Score Hunter"
+            description="Reach an AI score of 70% or higher"
+            progress={scoreChallengeDone ? 1 : 0}
+            target={1}
+            xp={100}
+            completed={scoreChallengeDone}
+          />
+        </View>
 
         <Text style={styles.sectionTitle}>
           Achievements
@@ -811,6 +899,68 @@ function AchievementBadge({
       <Text style={styles.badgeStatus}>
         {unlocked ? "Unlocked" : "Locked"}
       </Text>
+    </View>
+  );
+}
+
+function WeeklyChallengeCard({
+  icon,
+  title,
+  description,
+  progress,
+  target,
+  xp,
+  completed,
+}: {
+  icon: ComponentProps<typeof Ionicons>["name"];
+  title: string;
+  description: string;
+  progress: number;
+  target: number;
+  xp: number;
+  completed: boolean;
+}) {
+  const percentage = Math.min(100, (progress / target) * 100);
+
+  return (
+    <View style={styles.challengeCard}>
+      <View style={styles.challengeTop}>
+        <View style={styles.challengeIcon}>
+          <Ionicons
+            name={completed ? "checkmark" : icon}
+            size={19}
+            color={completed ? "#4ADE80" : "#A78BFA"}
+          />
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Text style={styles.challengeTitle}>{title}</Text>
+          <Text style={styles.challengeDescription}>{description}</Text>
+        </View>
+
+        <Text style={styles.challengeXP}>+{xp} XP</Text>
+      </View>
+
+      <View style={styles.progressTrack}>
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${percentage}%` },
+          ]}
+        />
+      </View>
+
+      <View style={styles.challengeFooter}>
+        <Text style={styles.challengeProgress}>{progress}/{target}</Text>
+        <Text
+          style={[
+            styles.challengeStatus,
+            completed && styles.challengeCompleted,
+          ]}
+        >
+          {completed ? "Completed" : "In progress"}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -1276,6 +1426,122 @@ const styles =
 
       marginTop: 27,
       marginBottom: 13,
+    },
+
+    xpCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      backgroundColor: "#17171D",
+      borderRadius: 17,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: "#3B3216",
+    },
+
+    xpIcon: {
+      width: 50,
+      height: 50,
+      borderRadius: 15,
+      backgroundColor: "#2A2412",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+
+    xpLabel: {
+      color: "#888",
+      fontSize: 10,
+    },
+
+    xpValue: {
+      color: "#FACC15",
+      fontSize: 22,
+      fontWeight: "bold",
+      marginTop: 2,
+    },
+
+    xpBreakdown: {
+      color: "#666",
+      fontSize: 9,
+      marginTop: 3,
+    },
+
+    challengeContainer: {
+      gap: 10,
+    },
+
+    challengeCard: {
+      backgroundColor: "#17171D",
+      borderRadius: 16,
+      padding: 15,
+    },
+
+    challengeTop: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 11,
+    },
+
+    challengeIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: "#251B3D",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+
+    challengeTitle: {
+      color: "#FFFFFF",
+      fontSize: 12,
+      fontWeight: "bold",
+    },
+
+    challengeDescription: {
+      color: "#666",
+      fontSize: 9,
+      marginTop: 3,
+    },
+
+    challengeXP: {
+      color: "#FACC15",
+      fontSize: 10,
+      fontWeight: "bold",
+    },
+
+    progressTrack: {
+      height: 7,
+      backgroundColor: "#292930",
+      borderRadius: 10,
+      marginTop: 14,
+      overflow: "hidden",
+    },
+
+    progressFill: {
+      height: "100%",
+      backgroundColor: "#7C3AED",
+      borderRadius: 10,
+    },
+
+    challengeFooter: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 7,
+    },
+
+    challengeProgress: {
+      color: "#777",
+      fontSize: 9,
+    },
+
+    challengeStatus: {
+      color: "#777",
+      fontSize: 9,
+    },
+
+    challengeCompleted: {
+      color: "#4ADE80",
+      fontWeight: "600",
     },
 
     achievementCard: {
