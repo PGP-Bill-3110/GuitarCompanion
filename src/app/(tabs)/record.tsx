@@ -63,6 +63,11 @@ export default function RecordScreen() {
     useState(false);
 
   const [
+    saved,
+    setSaved,
+  ] = useState(false);
+
+  const [
     message,
     setMessage,
   ] =
@@ -72,7 +77,8 @@ export default function RecordScreen() {
     if (
       !user ||
       !audioUri ||
-      saving
+      saving ||
+      saved
     ) {
       return;
     }
@@ -105,8 +111,10 @@ export default function RecordScreen() {
         }
       );
 
-      router.replace(
-        "/create" as any
+      setSaved(true);
+
+      setMessage(
+        "Đã lưu recording thành công ✓"
       );
     } catch (error) {
       console.error(
@@ -211,6 +219,10 @@ export default function RecordScreen() {
             setDurationMillis(
               result.durationMillis
             );
+
+            setSaved(false);
+
+            setMessage("");
           }}
         />
 
@@ -230,20 +242,26 @@ export default function RecordScreen() {
 
             (
               !audioUri ||
-              saving
+              saving ||
+              saved
             ) &&
               styles.disabled,
           ]}
           disabled={
             !audioUri ||
-            saving
+            saving ||
+            saved
           }
           onPress={
             handleSave
           }
         >
           <Ionicons
-            name="save-outline"
+            name={
+              saved
+                ? "checkmark-circle-outline"
+                : "save-outline"
+            }
             size={19}
             color="#FFFFFF"
           />
@@ -255,7 +273,9 @@ export default function RecordScreen() {
           >
             {saving
               ? "Saving..."
-              : "Save Project"}
+              : saved
+                ? "Saved"
+                : "Save Project"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
