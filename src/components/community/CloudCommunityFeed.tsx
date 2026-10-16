@@ -729,6 +729,16 @@ export function CommunityPostCard({
         </Text>
       )}
 
+      {post.type === "image" && post.mediaUrl && (
+        <View style={styles.mediaBox}>
+          <Image
+            source={{ uri: post.mediaUrl }}
+            style={styles.postImage}
+            resizeMode="cover"
+          />
+        </View>
+      )}
+
       {/* PRESET */}
 
       {post.type ===
@@ -1525,6 +1535,20 @@ const styles =
       lineHeight: 21,
 
       marginTop: 15,
+    },
+
+    mediaBox: {
+      width: "100%",
+      marginTop: 15,
+      borderRadius: 16,
+      overflow: "hidden",
+      backgroundColor: "#101015",
+    },
+
+    postImage: {
+      width: "100%",
+      aspectRatio: 16 / 9,
+      backgroundColor: "#101015",
     },
 
     presetBox: {

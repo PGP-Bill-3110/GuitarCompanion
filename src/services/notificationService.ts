@@ -20,6 +20,10 @@ import {
   getFollowerIds,
 } from "./followService";
 
+import type {
+  CloudPostType,
+} from "./communityService";
+
 export type NotificationType =
   | "post_like"
   | "post_comment"
@@ -93,9 +97,7 @@ interface NotifyFollowersInput {
 
   postId: string;
 
-  postType:
-    | "text"
-    | "preset";
+  postType: CloudPostType;
 
   presetId?: string;
 

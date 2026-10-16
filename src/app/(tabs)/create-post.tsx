@@ -11,6 +11,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Image,
 } from "react-native";
 
 import {
@@ -41,6 +42,13 @@ import {
 import {
   notifyFollowersOfNewPost,
 } from "../../services/notificationService";
+
+import * as ImagePicker
+  from "expo-image-picker";
+
+import {
+  uploadCommunityImage,
+} from "../../services/mediaService";
 
 export default function CreatePostScreen() {
   const {
@@ -80,7 +88,10 @@ export default function CreatePostScreen() {
     message,
     setMessage,
   ] = useState("");
-
+  const [
+    selectedImageUri,
+    setSelectedImageUri,
+  ] = useState<string | null>(null);
   useEffect(() => {
     if (!user) {
       setMyPresets([]);
@@ -113,6 +124,33 @@ export default function CreatePostScreen() {
         selectedPresetId
     );
 
+  async function handlePickImage() {
+    try {
+      setMessage("");
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: false,
+        quality: 0.85,
+      });
+
+      if (result.canceled) {
+        return;
+      }
+
+      const asset = result.assets[0];
+      if (!asset?.uri) {
+        throw new Error("Image picker returned no image URI.");
+      }
+
+      setSelectedImageUri(asset.uri);
+      setPostType("image");
+    } catch (error) {
+      console.error("Pick image error:", error);
+      setMessage("Không thể chọn ảnh.");
+    }
+  }
+
   async function handlePost() {
     if (!user) {
       router.replace(
@@ -144,6 +182,11 @@ export default function CreatePostScreen() {
       return;
     }
 
+    if (postType === "image" && !selectedImageUri) {
+      setMessage("Hãy chọn một ảnh.");
+      return;
+    }
+
     if (creating) {
       return;
     }
@@ -151,6 +194,18 @@ export default function CreatePostScreen() {
     try {
       setCreating(true);
       setMessage("");
+
+      let mediaUrl: string | undefined;
+      let mediaPath: string | undefined;
+
+      if (postType === "image" && selectedImageUri) {
+        const upload = await uploadCommunityImage(
+          user.uid,
+          selectedImageUri
+        );
+        mediaUrl = upload.url;
+        mediaPath = upload.path;
+      }
 
       const postId =
         await createCommunityPost(
@@ -167,6 +222,9 @@ export default function CreatePostScreen() {
               "preset"
                 ? selectedPreset
                 : undefined,
+
+            mediaUrl,
+            mediaPath,
           }
         );
 
@@ -322,6 +380,13 @@ export default function CreatePostScreen() {
           />
 
           <TypeButton
+            icon="image-outline"
+            title="Image"
+            active={postType === "image"}
+            onPress={handlePickImage}
+          />
+
+          <TypeButton
             icon="options-outline"
             title="Preset"
             active={
@@ -363,6 +428,27 @@ export default function CreatePostScreen() {
             styles.textArea
           }
         />
+
+        {postType === "image" && selectedImageUri && (
+          <View style={styles.imagePreviewCard}>
+            <Image
+              source={{ uri: selectedImageUri }}
+              style={styles.imagePreview}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={styles.removeImageButton}
+              accessibilityRole="button"
+              accessibilityLabel="Remove image"
+              onPress={() => {
+                setSelectedImageUri(null);
+                setPostType("text");
+              }}
+            >
+              <Ionicons name="close" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* PRESET SELECTOR */}
 
@@ -715,6 +801,32 @@ const styles =
 
       textAlignVertical:
         "top",
+    },
+
+    imagePreviewCard: {
+      position: "relative",
+      marginTop: 14,
+      borderRadius: 18,
+      overflow: "hidden",
+      backgroundColor: "#17171D",
+    },
+
+    imagePreview: {
+      width: "100%",
+      aspectRatio: 16 / 9,
+      backgroundColor: "#101015",
+    },
+
+    removeImageButton: {
+      position: "absolute",
+      top: 10,
+      right: 10,
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      backgroundColor: "rgba(0,0,0,0.65)",
+      alignItems: "center",
+      justifyContent: "center",
     },
 
     emptyCard: {

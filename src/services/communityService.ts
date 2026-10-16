@@ -27,7 +27,8 @@ import type {
 
 export type CloudPostType =
   | "text"
-  | "preset";
+  | "preset"
+  | "image";
 
 export type CommentReactionType =
   | "like"
@@ -52,6 +53,15 @@ export interface CloudCommunityPost {
   type: CloudPostType;
 
   content: string;
+
+mediaUrl:
+  string | null;
+
+mediaPath:
+  string | null;
+
+mediaType:
+  "image" | null;
 
   presetId: string | null;
 
@@ -88,6 +98,10 @@ interface CreatePostInput {
   content: string;
 
   preset?: GuitarPreset;
+
+  mediaUrl?: string;
+
+mediaPath?: string;
 }
 
 // ======================================
@@ -201,6 +215,20 @@ export async function createCommunityPost(
 
         content:
           input.content.trim(),
+
+        mediaUrl:
+  input.mediaUrl ??
+  null,
+
+mediaPath:
+  input.mediaPath ??
+  null,
+
+mediaType:
+  input.type ===
+  "image"
+    ? "image"
+    : null,
 
         presetId,
 

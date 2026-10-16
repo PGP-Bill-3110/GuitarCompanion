@@ -7,7 +7,19 @@ import {
 
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import {
+  useEffect,
+  useState,
+} from "react";
 
+import {
+  useAuth,
+} from "../../context/AuthContext";
+
+import {
+  RecordProject,
+  subscribeRecordProjects,
+} from "../../services/recordService";
 const tools = [
   {
     icon: "mic",
@@ -32,6 +44,23 @@ const tools = [
 ];
 
 export default function CreateScreen() {
+  const { user } = useAuth();
+  const uid = user?.uid;
+  const [projects, setProjects] =
+    useState<RecordProject[]>([]);
+
+  useEffect(() => {
+    if (!uid) {
+      setProjects([]);
+      return;
+    }
+
+    return subscribeRecordProjects(
+      uid,
+      setProjects
+    );
+  }, [uid]);
+
   function handleToolPress(title: string) {
     switch (title) {
       case "Preset":
@@ -39,7 +68,9 @@ export default function CreateScreen() {
         break;
 
       case "Record":
-        console.log("Record - coming soon");
+        router.push(
+          "/record" as any
+        );
         break;
 
       case "Cover":
@@ -107,23 +138,54 @@ export default function CreateScreen() {
         Recent Projects
       </Text>
 
-      <View style={styles.project}>
-        <Ionicons
-          name="musical-note"
-          size={30}
-          color="#A78BFA"
-        />
+      {projects.length === 0 ? (
+        <View style={styles.project}>
+          <Ionicons
+            name="mic-outline"
+            size={28}
+            color="#666"
+          />
 
-        <View style={{ marginLeft: 15 }}>
-          <Text style={styles.projectTitle}>
-            Midnight Jam
-          </Text>
+          <View style={{ marginLeft: 15 }}>
+            <Text style={styles.projectTitle}>
+              No recordings yet
+            </Text>
 
-          <Text style={styles.description}>
-            Draft • 2:34
-          </Text>
+            <Text style={styles.description}>
+              Record your first guitar idea.
+            </Text>
+          </View>
         </View>
-      </View>
+      ) : (
+        projects.slice(0, 5).map((project) => (
+          <View
+            key={project.id}
+            style={[
+              styles.project,
+              { marginBottom: 10 },
+            ]}
+          >
+            <Ionicons
+              name="musical-note"
+              size={30}
+              color="#A78BFA"
+            />
+
+            <View style={{ marginLeft: 15 }}>
+              <Text style={styles.projectTitle}>
+                {project.title}
+              </Text>
+
+              <Text style={styles.description}>
+                Draft •{" "}
+                {formatDuration(
+                  project.durationSeconds
+                )}
+              </Text>
+            </View>
+          </View>
+        ))
+      )}
     </View>
   );
 }
@@ -218,3 +280,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+function formatDuration(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remaining = seconds % 60;
+
+  return `${minutes}:${remaining
+    .toString()
+    .padStart(2, "0")}`;
+}

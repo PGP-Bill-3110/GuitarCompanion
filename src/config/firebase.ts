@@ -8,6 +8,10 @@ import { getAuth } from "firebase/auth";
 
 import { getFirestore } from "firebase/firestore";
 
+import {
+  getStorage,
+} from "firebase/storage";
+
 const firebaseConfig = {
   apiKey:
     process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -38,6 +42,8 @@ export const auth =
 
 export const db =
   getFirestore(firebaseApp);
+export const storage =
+  getStorage(firebaseApp);
 
 if (__DEV__) {
   console.log(
