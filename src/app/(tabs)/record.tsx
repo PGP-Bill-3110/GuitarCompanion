@@ -23,6 +23,10 @@ import {
   useAuth,
 } from "../../context/AuthContext";
 
+import {
+  createRecordProject,
+} from "../../services/recordService";
+
 import AudioRecorder
   from "../../components/practice/AudioRecorder";
 
@@ -86,6 +90,20 @@ export default function RecordScreen() {
     try {
       setSaving(true);
       setMessage("");
+
+      await createRecordProject(
+        user.uid,
+        {
+          title:
+            title.trim(),
+
+          durationSeconds:
+            durationMillis /
+            1000,
+
+          audioUri,
+        }
+      );
 
       router.replace(
         "/create" as any
