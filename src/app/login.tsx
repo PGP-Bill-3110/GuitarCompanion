@@ -1,3 +1,5 @@
+import { colors } from "../theme/colors";
+import AppGradientBackground from "../components/ui/AppGradientBackground";
 import {
   useState,
 } from "react";
@@ -159,6 +161,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <View style={styles.card}>
         {/* LOGO */}
 
@@ -186,7 +189,7 @@ export default function LoginScreen() {
           value={email}
           onChangeText={setEmail}
           placeholder="name@email.com"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="email-address"
@@ -203,7 +206,7 @@ export default function LoginScreen() {
           value={password}
           onChangeText={setPassword}
           placeholder="••••••••"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           secureTextEntry
           style={styles.input}
         />
@@ -319,8 +322,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
 
       alignItems: "center",
       justifyContent: "center",
@@ -334,11 +336,13 @@ const styles =
       maxWidth: 430,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 24,
 
       padding: 28,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     logoCircle: {
@@ -350,14 +354,14 @@ const styles =
       borderRadius: 22,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
     },
 
     logo: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 42,
 
@@ -377,7 +381,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       textAlign: "center",
 
@@ -386,7 +390,7 @@ const styles =
     },
 
     label: {
-      color: "#AAA",
+      color: colors.textSoft,
 
       fontSize: 12,
 
@@ -398,7 +402,7 @@ const styles =
 
     input: {
       backgroundColor:
-        "#101015",
+        colors.surfaceDeep,
 
       borderRadius: 13,
 
@@ -406,11 +410,13 @@ const styles =
       paddingVertical: 14,
 
       color: "#FFFFFF",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     primaryButton: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 14,
 
@@ -447,11 +453,11 @@ const styles =
       height: 1,
 
       backgroundColor:
-        "#303038",
+        colors.surfaceMuted,
     },
 
     dividerText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -485,7 +491,7 @@ const styles =
       borderRadius: 14,
 
       borderWidth: 1,
-      borderColor: "#DDD",
+      borderColor: colors.textSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -508,7 +514,7 @@ const styles =
     },
 
     secondaryText: {
-      color: "#777",
+      color: colors.textMuted,
 
       textAlign: "center",
 
@@ -516,7 +522,7 @@ const styles =
     },
 
     link: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontWeight: "bold",
     },

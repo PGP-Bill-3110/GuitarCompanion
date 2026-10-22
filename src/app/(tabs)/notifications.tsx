@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useMemo,
@@ -179,7 +181,7 @@ export default function NotificationsScreen() {
         <Ionicons
           name="notifications-outline"
           size={50}
-          color="#555"
+          color={colors.textDim}
         />
 
         <Text
@@ -218,6 +220,7 @@ export default function NotificationsScreen() {
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         showsVerticalScrollIndicator={
           false
@@ -325,7 +328,7 @@ export default function NotificationsScreen() {
                 <Ionicons
                   name="notifications-outline"
                   size={35}
-                  color="#A78BFA"
+                  color={colors.accent}
                 />
               </View>
 
@@ -549,7 +552,7 @@ function getNotificationColor(
       return "#EF476F";
 
     case "post_comment":
-      return "#A78BFA";
+      return colors.accent;
 
     case "preset_saved":
       return "#4ADE80";
@@ -561,7 +564,7 @@ function getNotificationColor(
       return "#60A5FA";
 
     default:
-      return "#A78BFA";
+      return colors.accent;
   }
 }
 
@@ -660,8 +663,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -693,10 +695,12 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -708,7 +712,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -716,7 +720,7 @@ const styles =
     },
 
     markAll: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 11,
 
@@ -724,7 +728,7 @@ const styles =
     },
 
     dayLabel: {
-      color: "#888",
+      color: colors.textSoft,
 
       fontSize: 12,
 
@@ -745,7 +749,7 @@ const styles =
       gap: 13,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 17,
 
@@ -756,7 +760,7 @@ const styles =
       borderWidth: 1,
 
       borderColor:
-        "#202027",
+        colors.surfaceRaised,
     },
 
     unreadCard: {
@@ -764,7 +768,7 @@ const styles =
         "#1B1724",
 
       borderColor:
-        "#33284A",
+        colors.accentSoft,
     },
 
     notificationIcon: {
@@ -780,7 +784,7 @@ const styles =
     },
 
     notificationText: {
-      color: "#BDBDBD",
+      color: colors.textSoft,
 
       fontSize: 13,
 
@@ -794,7 +798,7 @@ const styles =
     },
 
     time: {
-      color: "#555",
+      color: colors.textDim,
 
       fontSize: 10,
 
@@ -808,7 +812,7 @@ const styles =
       borderRadius: 4,
 
       backgroundColor:
-        "#8B5CF6",
+        colors.accent,
     },
 
     empty: {
@@ -824,7 +828,7 @@ const styles =
       borderRadius: 22,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -841,7 +845,7 @@ const styles =
     },
 
     emptyText: {
-      color: "#666",
+      color: colors.textMuted,
 
       maxWidth: 300,
 
@@ -855,8 +859,7 @@ const styles =
     center: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
 
       alignItems: "center",
       justifyContent: "center",
@@ -864,7 +867,7 @@ const styles =
 
     loginButton: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 13,
 

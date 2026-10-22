@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useState,
@@ -196,6 +198,7 @@ export default function ConnectionsScreen() {
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -314,7 +317,7 @@ export default function ConnectionsScreen() {
                   : "person-add-outline"
               }
               size={40}
-              color="#666"
+              color={colors.textMuted}
             />
 
             <Text
@@ -639,7 +642,7 @@ function ConnectionUserCard({
             size={15}
             color={
               following
-                ? "#A78BFA"
+                ? colors.accent
                 : "#FFFFFF"
             }
           />
@@ -702,8 +705,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -740,13 +742,15 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems:
         "center",
 
       justifyContent:
         "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -758,7 +762,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -770,7 +774,7 @@ const styles =
         "row",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 16,
 
@@ -794,12 +798,11 @@ const styles =
     },
 
     tabActive: {
-      backgroundColor:
-        "#7C3AED",
+      backgroundColor: colors.activeSoft,
     },
 
     tabText: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 13,
 
@@ -824,14 +827,14 @@ const styles =
       gap: 12,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       borderWidth: 1,
 
       borderColor:
-        "#24242C",
+        colors.surfaceRaised,
 
       padding: 14,
     },
@@ -862,7 +865,7 @@ const styles =
       borderRadius: 16,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems:
         "center",
@@ -884,7 +887,7 @@ const styles =
     },
 
     username: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -892,7 +895,7 @@ const styles =
     },
 
     level: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 9,
 
@@ -914,7 +917,7 @@ const styles =
       gap: 5,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 11,
 
@@ -925,12 +928,12 @@ const styles =
 
     followingButton: {
       backgroundColor:
-        "#211B2D",
+        colors.activeSoft,
 
       borderWidth: 1,
 
       borderColor:
-        "#453563",
+        colors.activeSoft,
     },
 
     followText: {
@@ -942,22 +945,24 @@ const styles =
     },
 
     followingText: {
-      color: "#A78BFA",
+      color: colors.accent,
     },
 
     youBadge: {
       backgroundColor:
-        "#292930",
+        colors.surfaceMuted,
 
       borderRadius: 10,
 
       paddingHorizontal: 12,
 
       paddingVertical: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     youText: {
-      color: "#888",
+      color: colors.textSoft,
 
       fontSize: 10,
 
@@ -972,7 +977,7 @@ const styles =
         "center",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -992,7 +997,7 @@ const styles =
     },
 
     emptyText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 11,
 

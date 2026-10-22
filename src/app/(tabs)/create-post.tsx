@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useMemo,
@@ -47,7 +49,7 @@ import * as ImagePicker
   from "expo-image-picker";
 
 import {
-  uploadCommunityImage,
+  uploadCommunityMedia,
 } from "../../services/mediaService";
 
 export default function CreatePostScreen() {
@@ -92,6 +94,8 @@ export default function CreatePostScreen() {
     selectedImageUri,
     setSelectedImageUri,
   ] = useState<string | null>(null);
+  const [selectedMediaType, setSelectedMediaType] = useState<string>("");
+  const [selectedMediaName, setSelectedMediaName] = useState<string>("");
   useEffect(() => {
     if (!user) {
       setMyPresets([]);
@@ -144,10 +148,32 @@ export default function CreatePostScreen() {
       }
 
       setSelectedImageUri(asset.uri);
+      setSelectedMediaType(asset.mimeType || "image/jpeg");
+      setSelectedMediaName(asset.fileName || "photo.jpg");
       setPostType("image");
     } catch (error) {
       console.error("Pick image error:", error);
       setMessage("Không thể chọn ảnh.");
+    }
+  }
+
+  async function handlePickVideo() {
+    try {
+      setMessage("");
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["videos"],
+        allowsEditing: false,
+      });
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      if (!asset?.uri) throw new Error("No video selected");
+      setSelectedImageUri(asset.uri);
+      setSelectedMediaType(asset.mimeType || (asset.fileName?.toLowerCase().endsWith(".mov") ? "video/quicktime" : "video/mp4"));
+      setSelectedMediaName(asset.fileName || "video.mp4");
+      setPostType("video");
+    } catch (error) {
+      console.error("Video picker error:", error);
+      setMessage("Không thể chọn video.");
     }
   }
 
@@ -182,8 +208,8 @@ export default function CreatePostScreen() {
       return;
     }
 
-    if (postType === "image" && !selectedImageUri) {
-      setMessage("Hãy chọn một ảnh.");
+    if ((postType === "image" || postType === "video") && !selectedImageUri) {
+      setMessage("Hãy chọn ảnh hoặc video.");
       return;
     }
 
@@ -198,10 +224,12 @@ export default function CreatePostScreen() {
       let mediaUrl: string | undefined;
       let mediaPath: string | undefined;
 
-      if (postType === "image" && selectedImageUri) {
-        const upload = await uploadCommunityImage(
+      if ((postType === "image" || postType === "video") && selectedImageUri) {
+        const upload = await uploadCommunityMedia(
           user.uid,
-          selectedImageUri
+          selectedImageUri,
+          selectedMediaType,
+          selectedMediaName
         );
         mediaUrl = upload.url;
         mediaPath = upload.path;
@@ -285,6 +313,7 @@ export default function CreatePostScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -387,6 +416,13 @@ export default function CreatePostScreen() {
           />
 
           <TypeButton
+            icon="videocam-outline"
+            title="Video"
+            active={postType === "video"}
+            onPress={handlePickVideo}
+          />
+
+          <TypeButton
             icon="options-outline"
             title="Preset"
             active={
@@ -422,20 +458,27 @@ export default function CreatePostScreen() {
               ? "Chia sẻ gì đó về tone này..."
               : "Bạn đang nghĩ gì?"
           }
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           multiline
           style={
             styles.textArea
           }
         />
 
-        {postType === "image" && selectedImageUri && (
+        {(postType === "image" || postType === "video") && selectedImageUri && (
           <View style={styles.imagePreviewCard}>
-            <Image
-              source={{ uri: selectedImageUri }}
-              style={styles.imagePreview}
-              resizeMode="cover"
-            />
+            {postType === "image" ? (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={styles.imagePreview}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={[styles.imagePreview, { alignItems: "center", justifyContent: "center" }]}>
+                <Ionicons name="videocam" size={38} color="#E5BAD1" />
+                <Text style={{ color: "#FFFFFF", marginTop: 8 }}>{selectedMediaName}</Text>
+              </View>
+            )}
             <TouchableOpacity
               style={styles.removeImageButton}
               accessibilityRole="button"
@@ -473,7 +516,7 @@ export default function CreatePostScreen() {
                 <Ionicons
                   name="options-outline"
                   size={35}
-                  color="#666"
+                  color={colors.textMuted}
                 />
 
                 <Text
@@ -542,7 +585,7 @@ export default function CreatePostScreen() {
                         <Ionicons
                           name="musical-notes"
                           size={25}
-                          color="#A78BFA"
+                          color={colors.accent}
                         />
                       </View>
 
@@ -594,8 +637,8 @@ export default function CreatePostScreen() {
                         size={23}
                         color={
                           selected
-                            ? "#8B5CF6"
-                            : "#555"
+                            ? colors.accent
+                            : colors.textDim
                         }
                       />
                     </TouchableOpacity>
@@ -647,7 +690,7 @@ function TypeButton({
         color={
           active
             ? "#FFFFFF"
-            : "#888"
+            : colors.textSoft
         }
       />
 
@@ -669,8 +712,7 @@ const styles =
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -697,10 +739,12 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -710,14 +754,14 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 12,
       marginTop: 2,
     },
 
     postButton: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 12,
 
@@ -759,7 +803,7 @@ const styles =
       gap: 7,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 13,
 
@@ -767,19 +811,18 @@ const styles =
 
       borderWidth: 1,
       borderColor:
-        "#292930",
+        colors.border,
     },
 
     typeButtonActive: {
-      backgroundColor:
-        "#7C3AED",
+      backgroundColor: colors.activeSoft,
 
-      borderColor:
-        "#8B5CF6",
+      borderColor: colors.borderAccent,
+      borderWidth: 1,
     },
 
     typeText: {
-      color: "#888",
+      color: colors.textSoft,
       fontWeight: "600",
     },
 
@@ -791,7 +834,7 @@ const styles =
       minHeight: 130,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -808,13 +851,15 @@ const styles =
       marginTop: 14,
       borderRadius: 18,
       overflow: "hidden",
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     imagePreview: {
       width: "100%",
       aspectRatio: 16 / 9,
-      backgroundColor: "#101015",
+      backgroundColor: colors.surfaceDeep,
     },
 
     removeImageButton: {
@@ -831,13 +876,15 @@ const styles =
 
     emptyCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       padding: 25,
 
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     emptyTitle: {
@@ -847,7 +894,7 @@ const styles =
     },
 
     emptyText: {
-      color: "#777",
+      color: colors.textMuted,
       textAlign: "center",
       maxWidth: 350,
       lineHeight: 19,
@@ -855,7 +902,7 @@ const styles =
     },
 
     purpleLink: {
-      color: "#A78BFA",
+      color: colors.accent,
       fontWeight: "bold",
       marginTop: 15,
     },
@@ -868,13 +915,13 @@ const styles =
       gap: 13,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 17,
 
       borderWidth: 1,
       borderColor:
-        "#25252D",
+        colors.border,
 
       padding: 14,
 
@@ -883,10 +930,11 @@ const styles =
 
     presetCardSelected: {
       borderColor:
-        "#7C3AED",
+        colors.borderAccent,
 
       backgroundColor:
-        "#1D1729",
+        colors.activeSoft,
+      borderWidth: 1,
     },
 
     presetIcon: {
@@ -896,7 +944,7 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -910,7 +958,7 @@ const styles =
     },
 
     code: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 12,
       fontWeight: "600",
@@ -919,7 +967,7 @@ const styles =
     },
 
     tags: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 10,
 

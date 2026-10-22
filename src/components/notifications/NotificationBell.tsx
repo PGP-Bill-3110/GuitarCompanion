@@ -1,3 +1,4 @@
+import { colors } from "../../theme/colors";
 import {
   useEffect,
   useState,
@@ -99,12 +100,14 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
 
       position: "relative",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     badge: {

@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useState,
 } from "react";
@@ -136,6 +138,7 @@ export default function RecordScreen() {
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -194,7 +197,7 @@ export default function RecordScreen() {
             setTitle
           }
           placeholder="Recording title"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           style={
             styles.titleInput
           }
@@ -288,8 +291,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -327,13 +329,15 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems:
         "center",
 
       justifyContent:
         "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -346,7 +350,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -368,7 +372,7 @@ const styles =
 
     titleInput: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 14,
 
@@ -379,7 +383,7 @@ const styles =
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
     },
 
     saveButton: {
@@ -395,7 +399,7 @@ const styles =
       gap: 8,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 14,
 

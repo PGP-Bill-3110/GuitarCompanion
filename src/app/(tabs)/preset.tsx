@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useState,
@@ -362,6 +364,7 @@ export default function PresetScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <ScrollView
         showsVerticalScrollIndicator={
           false
@@ -403,7 +406,7 @@ export default function PresetScreen() {
           <Ionicons
             name="options"
             size={28}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </View>
 
@@ -461,7 +464,7 @@ export default function PresetScreen() {
                 <Ionicons
                   name="musical-notes"
                   size={32}
-                  color="#A78BFA"
+                  color={colors.accent}
                 />
               </View>
 
@@ -639,8 +642,8 @@ export default function PresetScreen() {
                     )
                   }
                   trackColor={{
-                    false: "#34343D",
-                    true: "#7C3AED",
+                    false: colors.surfaceMuted,
+                    true: colors.action,
                   }}
                 />
               </View>
@@ -796,7 +799,7 @@ export default function PresetScreen() {
                 <Ionicons
                   name="library-outline"
                   size={50}
-                  color="#555"
+                  color={colors.textDim}
                 />
 
                 <Text
@@ -887,7 +890,7 @@ export default function PresetScreen() {
                     setImportCode
                   }
                   placeholder="GC-XXXXXX"
-                  placeholderTextColor="#666"
+                  placeholderTextColor={colors.textMuted}
                   autoCapitalize="characters"
                   style={
                     styles.codeInput
@@ -964,7 +967,7 @@ function PresetTabButton({
         color={
           active
             ? "#FFFFFF"
-            : "#777"
+            : colors.textMuted
         }
       />
 
@@ -1103,7 +1106,7 @@ function SavePresetForm({
         value={presetName}
         onChangeText={setPresetName}
         placeholder="Dreamy Clean"
-        placeholderTextColor="#666"
+        placeholderTextColor={colors.textMuted}
         style={styles.input}
       />
 
@@ -1115,7 +1118,7 @@ function SavePresetForm({
           setDescription
         }
         placeholder="Mô tả tone..."
-        placeholderTextColor="#666"
+        placeholderTextColor={colors.textMuted}
         multiline
         style={[
           styles.input,
@@ -1131,7 +1134,7 @@ function SavePresetForm({
           setCoverImage
         }
         placeholder="/presets/covers/dreamy.jpg"
-        placeholderTextColor="#666"
+        placeholderTextColor={colors.textMuted}
         style={styles.input}
       />
 
@@ -1219,8 +1222,8 @@ function SavePresetForm({
             setIsPublic
           }
           trackColor={{
-            false: "#34343D",
-            true: "#7C3AED",
+            false: colors.surfaceMuted,
+            true: colors.action,
           }}
         />
       </View>
@@ -1289,7 +1292,7 @@ function PresetCard({
           <Ionicons
             name="musical-notes"
             size={28}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </View>
       )}
@@ -1351,7 +1354,7 @@ function PresetCard({
           <Ionicons
             name="copy-outline"
             size={19}
-            color="#AAAAAA"
+            color={colors.textSoft}
           />
         </TouchableOpacity>
 
@@ -1400,7 +1403,7 @@ function ImportPreview({
           <Ionicons
             name="musical-notes"
             size={34}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </View>
 
@@ -1547,7 +1550,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
 
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
   },
 
   content: {
@@ -1574,10 +1577,12 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   headerText: {
@@ -1595,7 +1600,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    color: "#777",
+    color: colors.textMuted,
 
     marginTop: 3,
   },
@@ -1603,7 +1608,7 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: "row",
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 16,
 
@@ -1628,11 +1633,11 @@ const styles = StyleSheet.create({
   },
 
   activeTab: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.activeSoft,
   },
 
   tabText: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontWeight: "600",
   },
@@ -1646,7 +1651,7 @@ const styles = StyleSheet.create({
 
     alignItems: "center",
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
@@ -1655,6 +1660,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
 
     gap: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   heroIcon: {
@@ -1663,7 +1670,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 17,
 
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
 
     alignItems: "center",
     justifyContent: "center",
@@ -1678,7 +1685,7 @@ const styles = StyleSheet.create({
   },
 
   heroText: {
-    color: "#888",
+    color: colors.textSoft,
 
     marginTop: 5,
   },
@@ -1690,12 +1697,14 @@ const styles = StyleSheet.create({
 
     gap: 6,
 
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
 
     borderRadius: 10,
 
     paddingHorizontal: 10,
     paddingVertical: 7,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   onlineDot: {
@@ -1708,7 +1717,7 @@ const styles = StyleSheet.create({
   },
 
   deviceText: {
-    color: "#AAA",
+    color: colors.textSoft,
 
     fontSize: 11,
   },
@@ -1733,13 +1742,15 @@ const styles = StyleSheet.create({
   },
 
   panel: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
     padding: 18,
 
     gap: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   setting: {
@@ -1759,7 +1770,7 @@ const styles = StyleSheet.create({
   },
 
   settingHint: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 11,
 
@@ -1767,7 +1778,7 @@ const styles = StyleSheet.create({
   },
 
   settingValue: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontWeight: "bold",
   },
@@ -1786,10 +1797,12 @@ const styles = StyleSheet.create({
 
     borderRadius: 10,
 
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
 
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   bar: {
@@ -1799,7 +1812,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 5,
 
-    backgroundColor: "#2B2B33",
+    backgroundColor: colors.surfaceMuted,
 
     overflow: "hidden",
   },
@@ -1807,7 +1820,7 @@ const styles = StyleSheet.create({
   barFill: {
     height: "100%",
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
   },
 
   switchRow: {
@@ -1821,7 +1834,7 @@ const styles = StyleSheet.create({
   },
 
   saveButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     borderRadius: 17,
 
@@ -1848,7 +1861,7 @@ const styles = StyleSheet.create({
   form: {
     marginTop: 18,
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
@@ -1866,7 +1879,7 @@ const styles = StyleSheet.create({
   },
 
   fieldLabel: {
-    color: "#AAA",
+    color: colors.textSoft,
 
     fontSize: 12,
 
@@ -1877,7 +1890,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: "#101015",
+    backgroundColor: colors.surfaceDeep,
 
     borderRadius: 12,
 
@@ -1887,10 +1900,12 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
 
     outlineStyle: "none",
+    borderWidth: 1,
+    borderColor: colors.border,
   } as any,
 
   tagHint: {
-    color: "#666",
+    color: colors.textMuted,
     fontSize: 11,
     marginBottom: 10,
   },
@@ -1908,18 +1923,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
     borderWidth: 1,
-    borderColor: "#303038",
+    borderColor: colors.border,
   },
 
   tagOptionSelected: {
-    backgroundColor: "#7C3AED",
-    borderColor: "#8B5CF6",
+    backgroundColor: colors.action,
+    borderColor: colors.accent,
   },
 
   tagOptionText: {
-    color: "#999",
+    color: colors.textSoft,
     fontSize: 12,
     fontWeight: "600",
   },
@@ -1929,7 +1944,7 @@ const styles = StyleSheet.create({
   },
 
   tagCount: {
-    color: "#666",
+    color: colors.textMuted,
     fontSize: 10,
     marginTop: 9,
   },
@@ -1951,7 +1966,7 @@ const styles = StyleSheet.create({
   },
 
   confirmButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     borderRadius: 13,
 
@@ -2033,7 +2048,7 @@ const styles = StyleSheet.create({
   count: {
     color: "#FFFFFF",
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     minWidth: 25,
 
@@ -2048,7 +2063,7 @@ const styles = StyleSheet.create({
   },
 
   presetCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 18,
 
@@ -2059,6 +2074,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
 
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   cover: {
@@ -2074,7 +2091,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 15,
 
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
 
     alignItems: "center",
     justifyContent: "center",
@@ -2095,7 +2112,7 @@ const styles = StyleSheet.create({
   },
 
   creator: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 12,
 
@@ -2103,7 +2120,7 @@ const styles = StyleSheet.create({
   },
 
   code: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontWeight: "bold",
 
@@ -2121,7 +2138,7 @@ const styles = StyleSheet.create({
   },
 
   tag: {
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
 
     borderRadius: 7,
 
@@ -2130,7 +2147,7 @@ const styles = StyleSheet.create({
   },
 
   tagText: {
-    color: "#AAA",
+    color: colors.textSoft,
 
     fontSize: 10,
   },
@@ -2147,14 +2164,14 @@ const styles = StyleSheet.create({
 
     borderRadius: 11,
 
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
 
     alignItems: "center",
     justifyContent: "center",
   },
 
   loadButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     borderRadius: 9,
 
@@ -2187,17 +2204,19 @@ const styles = StyleSheet.create({
   },
 
   emptyText: {
-    color: "#777",
+    color: colors.textMuted,
 
     marginTop: 5,
   },
 
   importCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
     padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   importTitle: {
@@ -2209,7 +2228,7 @@ const styles = StyleSheet.create({
   },
 
   importHint: {
-    color: "#777",
+    color: colors.textMuted,
 
     marginTop: 5,
   },
@@ -2225,7 +2244,7 @@ const styles = StyleSheet.create({
   codeInput: {
     flex: 1,
 
-    backgroundColor: "#101015",
+    backgroundColor: colors.surfaceDeep,
 
     borderRadius: 12,
 
@@ -2240,6 +2259,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
 
     outlineStyle: "none",
+    borderWidth: 1,
+    borderColor: colors.border,
   } as any,
 
   searchButton: {
@@ -2248,20 +2269,20 @@ const styles = StyleSheet.create({
 
     borderRadius: 13,
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     alignItems: "center",
     justifyContent: "center",
   },
 
   message: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     marginTop: 14,
   },
 
   importPreview: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
@@ -2284,7 +2305,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 18,
 
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
 
     alignItems: "center",
     justifyContent: "center",
@@ -2299,7 +2320,7 @@ const styles = StyleSheet.create({
   },
 
   previewCode: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontWeight: "bold",
 
@@ -2307,7 +2328,7 @@ const styles = StyleSheet.create({
   },
 
   previewDescription: {
-    color: "#AAA",
+    color: colors.textSoft,
 
     lineHeight: 21,
 
@@ -2327,7 +2348,7 @@ const styles = StyleSheet.create({
   miniSetting: {
     width: "31%",
 
-    backgroundColor: "#101015",
+    backgroundColor: colors.surfaceDeep,
 
     borderRadius: 11,
 
@@ -2335,7 +2356,7 @@ const styles = StyleSheet.create({
   },
 
   miniLabel: {
-    color: "#666",
+    color: colors.textMuted,
 
     fontSize: 10,
   },

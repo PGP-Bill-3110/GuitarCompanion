@@ -1,3 +1,5 @@
+import { colors } from "../../../../theme/colors";
+import AppGradientBackground from "../../../../components/ui/AppGradientBackground";
 import {
   View,
   Text,
@@ -67,6 +69,7 @@ export default function ScoreScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       {/* HEADER */}
 
       <View style={styles.header}>
@@ -103,7 +106,7 @@ export default function ScoreScreen() {
           <Ionicons
             name="document-text"
             size={17}
-            color="#A78BFA"
+            color={colors.accent}
           />
 
           <Text style={styles.badgeText}>
@@ -141,7 +144,7 @@ function ErrorScreen({
       <Ionicons
         name="warning-outline"
         size={55}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text style={styles.errorTitle}>
@@ -171,7 +174,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor: "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     header: {
@@ -184,7 +187,7 @@ const styles =
 
       alignItems: "center",
 
-      backgroundColor: "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     backButton: {
@@ -193,10 +196,12 @@ const styles =
 
       borderRadius: 14,
 
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     songInfo: {
@@ -214,7 +219,7 @@ const styles =
     },
 
     artist: {
-      color: "#888",
+      color: colors.textSoft,
 
       fontSize: 13,
 
@@ -233,11 +238,13 @@ const styles =
 
       borderRadius: 11,
 
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     badgeText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 12,
 
@@ -253,7 +260,7 @@ const styles =
     errorScreen: {
       flex: 1,
 
-      backgroundColor: "#0B0B0F",
+      backgroundColor: "#355C7D",
 
       alignItems: "center",
       justifyContent: "center",
@@ -281,7 +288,7 @@ const styles =
 
       borderRadius: 13,
 
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
     },
 
     errorButtonText: {

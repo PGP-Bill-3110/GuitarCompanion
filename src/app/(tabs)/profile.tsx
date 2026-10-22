@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useMemo,
@@ -402,6 +404,7 @@ export default function ProfileScreen() {
         false
       }
     >
+      <AppGradientBackground />
       {/* =============================================== */}
       {/* HEADER                                          */}
       {/* =============================================== */}
@@ -510,7 +513,7 @@ export default function ProfileScreen() {
                   plan ===
                   "premium"
                     ? "#FBBF24"
-                    : "#A78BFA"
+                    : colors.accent
                 }
               />
 
@@ -552,7 +555,7 @@ export default function ProfileScreen() {
             <Ionicons
               name="musical-note"
               size={12}
-              color="#A78BFA"
+              color={colors.accent}
             />
 
             <Text
@@ -808,7 +811,7 @@ function StatCard({
       <Ionicons
         name={icon}
         size={22}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text
@@ -859,7 +862,7 @@ function ProfileRow({
               : icon
           }
           size={20}
-          color="#A78BFA"
+          color={colors.accent}
         />
       </View>
 
@@ -920,7 +923,7 @@ function MenuRow({
         <Ionicons
           name={icon}
           size={21}
-          color="#A78BFA"
+          color={colors.accent}
         />
       </View>
 
@@ -949,7 +952,7 @@ function MenuRow({
       <Ionicons
         name="chevron-forward"
         size={18}
-        color="#555"
+        color={colors.textDim}
       />
     </TouchableOpacity>
   );
@@ -977,8 +980,7 @@ const styles =
     container: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -996,8 +998,7 @@ const styles =
     centerScreen: {
       flex: 1,
 
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
 
       alignItems: "center",
       justifyContent: "center",
@@ -1006,7 +1007,7 @@ const styles =
     },
 
     loadingText: {
-      color: "#888",
+      color: colors.textSoft,
     },
 
     header: {
@@ -1035,17 +1036,19 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     // PROFILE
 
     profileCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 22,
 
@@ -1054,6 +1057,8 @@ const styles =
       flexDirection: "row",
 
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     avatar: {
@@ -1063,7 +1068,7 @@ const styles =
       borderRadius: 28,
 
       backgroundColor:
-        "#25252D",
+        colors.surfaceMuted,
     },
 
     emojiAvatar: {
@@ -1073,7 +1078,7 @@ const styles =
       borderRadius: 28,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1110,7 +1115,7 @@ const styles =
     },
 
     username: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       marginTop: 5,
 
@@ -1118,7 +1123,7 @@ const styles =
     },
 
     email: {
-      color: "#777",
+      color: colors.textMuted,
 
       marginTop: 4,
 
@@ -1134,7 +1139,7 @@ const styles =
 
       gap: 7,
 
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
 
       borderRadius: 12,
 
@@ -1161,7 +1166,7 @@ const styles =
       gap: 4,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       paddingHorizontal: 8,
       paddingVertical: 4,
@@ -1175,7 +1180,7 @@ const styles =
     },
 
     planText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 9,
 
@@ -1197,7 +1202,7 @@ const styles =
       gap: 5,
 
       backgroundColor:
-        "#202027",
+        colors.surfaceRaised,
 
       borderRadius: 8,
 
@@ -1205,10 +1210,12 @@ const styles =
       paddingVertical: 5,
 
       marginTop: 9,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     levelText: {
-      color: "#AAA",
+      color: colors.textSoft,
 
       fontSize: 11,
 
@@ -1229,13 +1236,15 @@ const styles =
       flex: 1,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 16,
 
       paddingVertical: 16,
 
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     statValue: {
@@ -1249,7 +1258,7 @@ const styles =
     },
 
     statLabel: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -1271,11 +1280,13 @@ const styles =
 
     identityCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       paddingHorizontal: 17,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     profileRow: {
@@ -1290,7 +1301,7 @@ const styles =
       borderBottomWidth: 1,
 
       borderBottomColor:
-        "#26262D",
+        colors.surfaceRaised,
     },
 
     rowIcon: {
@@ -1300,14 +1311,14 @@ const styles =
       borderRadius: 11,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
     },
 
     rowLabel: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 10,
     },
@@ -1324,13 +1335,15 @@ const styles =
 
     menuCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       paddingHorizontal: 16,
 
       overflow: "hidden",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     menuRow: {
@@ -1347,7 +1360,7 @@ const styles =
       borderBottomWidth: 1,
 
       borderBottomColor:
-        "#26262D",
+        colors.surfaceRaised,
     },
 
     menuIcon: {
@@ -1357,7 +1370,7 @@ const styles =
       borderRadius: 12,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1370,7 +1383,7 @@ const styles =
     },
 
     menuSubtitle: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1402,7 +1415,7 @@ const styles =
     },
 
     footer: {
-      color: "#444",
+      color: colors.textDim,
 
       textAlign: "center",
 
@@ -1420,7 +1433,7 @@ const styles =
       borderRadius: 30,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1441,7 +1454,7 @@ const styles =
     },
 
     guestText: {
-      color: "#777",
+      color: colors.textMuted,
 
       textAlign: "center",
 
@@ -1458,7 +1471,7 @@ const styles =
       maxWidth: 320,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 14,
 
@@ -1476,7 +1489,7 @@ const styles =
     },
 
     registerText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontWeight: "600",
 

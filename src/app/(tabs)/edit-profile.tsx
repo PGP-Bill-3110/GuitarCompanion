@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useMemo,
@@ -301,6 +303,7 @@ export default function EditProfileScreen() {
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -396,7 +399,7 @@ export default function EditProfileScreen() {
             setDisplayName
           }
           placeholder="Phúc Phan Gia"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           style={
             styles.input
           }
@@ -429,7 +432,7 @@ export default function EditProfileScreen() {
             }
             autoCapitalize="none"
             placeholder="phucguitar"
-            placeholderTextColor="#666"
+            placeholderTextColor={colors.textMuted}
             style={
               styles.usernameTextInput
             }
@@ -457,7 +460,7 @@ export default function EditProfileScreen() {
           multiline
           maxLength={160}
           placeholder="Tell other guitarists about yourself..."
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           style={[
             styles.input,
             styles.bioInput,
@@ -625,7 +628,7 @@ export default function EditProfileScreen() {
           placeholder={
             "Yamaha Pacifica 112V\nNUX Mighty Plug\nBoss DS-1"
           }
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           style={[
             styles.input,
             styles.gearInput,
@@ -719,7 +722,7 @@ function SectionTitle({
       <Ionicons
         name={icon}
         size={20}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text
@@ -750,8 +753,7 @@ const styles =
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -782,10 +784,12 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -797,7 +801,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -806,7 +810,7 @@ const styles =
 
     saveButton: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 12,
 
@@ -846,7 +850,7 @@ const styles =
     },
 
     fieldLabel: {
-      color: "#BDBDBD",
+      color: colors.textSoft,
 
       fontSize: 11,
 
@@ -858,14 +862,14 @@ const styles =
 
     input: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 14,
 
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
 
       color: "#FFFFFF",
 
@@ -881,20 +885,20 @@ const styles =
       alignItems: "center",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 14,
 
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
 
       paddingLeft: 14,
     },
 
     atSign: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontWeight: "bold",
 
@@ -913,7 +917,7 @@ const styles =
     },
 
     hint: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -935,7 +939,7 @@ const styles =
     },
 
     counter: {
-      color: "#555",
+      color: colors.textDim,
 
       fontSize: 9,
 
@@ -956,28 +960,27 @@ const styles =
       alignItems: "center",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 12,
 
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
 
       paddingVertical: 11,
     },
 
     levelButtonSelected: {
-      backgroundColor:
-        "#7C3AED",
+      backgroundColor: colors.activeSoft,
 
-      borderColor:
-        "#8B5CF6",
+      borderColor: colors.borderAccent,
+      borderWidth: 1,
     },
 
     levelText: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1006,29 +1009,28 @@ const styles =
       gap: 5,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 20,
 
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
 
       paddingHorizontal: 12,
       paddingVertical: 8,
     },
 
     genreChipSelected: {
-      backgroundColor:
-        "#7C3AED",
+      backgroundColor: colors.activeSoft,
 
-      borderColor:
-        "#8B5CF6",
+      borderColor: colors.borderAccent,
+      borderWidth: 1,
     },
 
     genreText: {
-      color: "#888",
+      color: colors.textSoft,
 
       fontSize: 11,
 
@@ -1074,7 +1076,7 @@ const styles =
       gap: 8,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 14,
 

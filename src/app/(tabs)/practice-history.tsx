@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   type ComponentProps,
   useEffect,
@@ -269,6 +271,7 @@ const isNewPersonalBest =
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -509,7 +512,7 @@ const isNewPersonalBest =
     <Ionicons
       name="stats-chart-outline"
       size={30}
-      color="#666"
+      color={colors.textMuted}
     />
 
     <Text
@@ -597,7 +600,7 @@ const isNewPersonalBest =
             <Ionicons
               name="trophy-outline"
               size={24}
-              color="#A78BFA"
+              color={colors.accent}
             />
           </View>
 
@@ -709,7 +712,7 @@ const isNewPersonalBest =
             <Ionicons
               name="musical-notes-outline"
               size={42}
-              color="#666"
+              color={colors.textMuted}
             />
 
             <Text
@@ -772,7 +775,7 @@ function Stat({
       <Ionicons
         name={icon}
         size={20}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text
@@ -812,7 +815,7 @@ function ProgressCard({
       <Ionicons
         name={icon}
         size={19}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text
@@ -884,7 +887,7 @@ function AchievementBadge({
       <Ionicons
         name={unlocked ? icon : "lock-closed-outline"}
         size={20}
-        color={unlocked ? "#A78BFA" : "#555"}
+        color={unlocked ? colors.accent : colors.textDim}
       />
 
       <Text
@@ -929,7 +932,7 @@ function WeeklyChallengeCard({
           <Ionicons
             name={completed ? "checkmark" : icon}
             size={19}
-            color={completed ? "#4ADE80" : "#A78BFA"}
+            color={completed ? "#4ADE80" : colors.accent}
           />
         </View>
 
@@ -1130,7 +1133,7 @@ function SessionCard({
                 : "document-text-outline"
             }
             size={23}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </View>
 
@@ -1175,7 +1178,7 @@ function SessionCard({
         <Ionicons
           name="chevron-forward"
           size={18}
-          color="#666"
+          color={colors.textMuted}
         />
       </View>
 
@@ -1229,7 +1232,7 @@ function SessionCard({
           <Ionicons
             name="sparkles-outline"
             size={14}
-            color="#666"
+            color={colors.textMuted}
           />
 
           <Text
@@ -1326,8 +1329,7 @@ const styles =
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -1358,10 +1360,12 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     title: {
@@ -1373,7 +1377,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1390,7 +1394,7 @@ const styles =
       flex: 1,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 17,
 
@@ -1410,7 +1414,7 @@ const styles =
     },
 
     statLabel: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
 
@@ -1432,7 +1436,7 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
       gap: 14,
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 17,
       padding: 16,
       borderWidth: 1,
@@ -1449,7 +1453,7 @@ const styles =
     },
 
     xpLabel: {
-      color: "#888",
+      color: colors.textSoft,
       fontSize: 10,
     },
 
@@ -1461,7 +1465,7 @@ const styles =
     },
 
     xpBreakdown: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 9,
       marginTop: 3,
     },
@@ -1471,9 +1475,11 @@ const styles =
     },
 
     challengeCard: {
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 16,
       padding: 15,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     challengeTop: {
@@ -1486,7 +1492,7 @@ const styles =
       width: 40,
       height: 40,
       borderRadius: 12,
-      backgroundColor: "#251B3D",
+      backgroundColor: colors.accentSoft,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -1498,7 +1504,7 @@ const styles =
     },
 
     challengeDescription: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 9,
       marginTop: 3,
     },
@@ -1511,7 +1517,7 @@ const styles =
 
     progressTrack: {
       height: 7,
-      backgroundColor: "#292930",
+      backgroundColor: colors.surfaceMuted,
       borderRadius: 10,
       marginTop: 14,
       overflow: "hidden",
@@ -1519,7 +1525,7 @@ const styles =
 
     progressFill: {
       height: "100%",
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
       borderRadius: 10,
     },
 
@@ -1530,12 +1536,12 @@ const styles =
     },
 
     challengeProgress: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 9,
     },
 
     challengeStatus: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 9,
     },
 
@@ -1548,24 +1554,24 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
       gap: 14,
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 17,
       padding: 16,
       borderWidth: 1,
-      borderColor: "#312747",
+      borderColor: colors.borderAccent,
     },
 
     achievementIcon: {
       width: 50,
       height: 50,
       borderRadius: 15,
-      backgroundColor: "#251B3D",
+      backgroundColor: colors.accentSoft,
       alignItems: "center",
       justifyContent: "center",
     },
 
     achievementTitle: {
-      color: "#AAAAAA",
+      color: colors.textSoft,
       fontSize: 10,
     },
 
@@ -1577,7 +1583,7 @@ const styles =
     },
 
     achievementDescription: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 9,
       marginTop: 3,
     },
@@ -1586,14 +1592,16 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 15,
       padding: 14,
       marginTop: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     improvementTitle: {
-      color: "#AAAAAA",
+      color: colors.textSoft,
       fontSize: 10,
     },
 
@@ -1612,7 +1620,7 @@ const styles =
     },
 
     improvementDescription: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 9,
       marginTop: 2,
     },
@@ -1643,10 +1651,12 @@ const styles =
 
     badgeCard: {
       width: "48%",
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 14,
       paddingVertical: 14,
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     badgeCardLocked: {
@@ -1661,24 +1671,26 @@ const styles =
     },
 
     badgeTitleLocked: {
-      color: "#777",
+      color: colors.textMuted,
     },
 
     badgeStatus: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 8,
       marginTop: 3,
     },
 
     sessionCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 16,
 
       padding: 14,
 
       marginBottom: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     sessionIcon: {
@@ -1688,7 +1700,7 @@ const styles =
       borderRadius: 13,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1703,7 +1715,7 @@ const styles =
     },
 
     sessionMeta: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -1711,7 +1723,7 @@ const styles =
     },
 
     sessionType: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 9,
 
@@ -1721,7 +1733,7 @@ const styles =
 
     empty: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -1739,7 +1751,7 @@ const styles =
     },
 
     emptyText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1770,7 +1782,7 @@ const styles =
       borderTopWidth: 1,
 
       borderTopColor:
-        "#292930",
+        colors.border,
     },
 
     scoreItem: {
@@ -1788,7 +1800,7 @@ const styles =
     },
 
     scoreLabel: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
 
@@ -1801,7 +1813,7 @@ const styles =
       height: 28,
 
       backgroundColor:
-        "#292930",
+        colors.surfaceMuted,
     },
 
     notAnalyzedRow: {
@@ -1818,11 +1830,11 @@ const styles =
       borderTopWidth: 1,
 
       borderTopColor:
-        "#292930",
+        colors.border,
     },
 
     notAnalyzedText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
     },
@@ -1839,7 +1851,7 @@ const styles =
       width: "48%",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 16,
 
@@ -1848,6 +1860,8 @@ const styles =
       paddingHorizontal: 14,
 
       alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     progressValue: {
@@ -1861,7 +1875,7 @@ const styles =
     },
 
     progressLabel: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
 
@@ -1869,7 +1883,7 @@ const styles =
     },
 
     analyzedText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -1885,7 +1899,7 @@ const styles =
       gap: 8,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       borderRadius: 13,
 
@@ -1895,7 +1909,7 @@ const styles =
     },
 
     demoButtonText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 11,
 
@@ -1906,7 +1920,7 @@ const styles =
       flexDirection: "row",
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 14,
 
@@ -1926,12 +1940,11 @@ const styles =
     },
 
     metricTabActive: {
-      backgroundColor:
-        "#7C3AED",
+      backgroundColor: colors.activeSoft,
     },
 
     metricTabText: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -1944,11 +1957,13 @@ const styles =
 
     chartCard: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       padding: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     chartContent: {
@@ -1968,7 +1983,7 @@ const styles =
     },
 
     chartValue: {
-      color: "#BBBBBB",
+      color: colors.textSoft,
 
       fontSize: 9,
 
@@ -1979,7 +1994,7 @@ const styles =
       width: 30,
 
       backgroundColor:
-        "#222229",
+        colors.surfaceMuted,
 
       borderRadius: 7,
 
@@ -1993,13 +2008,13 @@ const styles =
       width: "100%",
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 7,
     },
 
     chartDate: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
 
@@ -2008,7 +2023,7 @@ const styles =
 
     chartEmpty: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -2019,7 +2034,7 @@ const styles =
     },
 
     chartEmptyText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 10,
 

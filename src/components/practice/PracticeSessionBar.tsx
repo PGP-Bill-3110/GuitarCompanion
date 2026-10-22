@@ -1,3 +1,4 @@
+import { colors } from "../../theme/colors";
 import {
   useEffect,
   useState,
@@ -315,7 +316,7 @@ export default function PracticeSessionBar({
           <Ionicons
             name="create-outline"
             size={16}
-            color="#A78BFA"
+            color={colors.accent}
           />
 
           <Text
@@ -329,7 +330,7 @@ export default function PracticeSessionBar({
           <Ionicons
             name="chevron-forward"
             size={15}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </TouchableOpacity>
       )}
@@ -365,14 +366,14 @@ const styles =
   StyleSheet.create({
     container: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
 
       padding: 16,
 
@@ -394,7 +395,7 @@ const styles =
       borderRadius: 5,
 
       backgroundColor:
-        "#555",
+        colors.textDim,
     },
 
     activeDot: {
@@ -411,7 +412,7 @@ const styles =
     },
 
     timer: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 22,
 
@@ -429,7 +430,7 @@ const styles =
       gap: 7,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 12,
 
@@ -481,7 +482,7 @@ const styles =
       gap: 6,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       borderRadius: 11,
 
@@ -491,7 +492,7 @@ const styles =
     },
 
     reviewText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 10,
 

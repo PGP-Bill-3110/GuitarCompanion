@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   View,
   Text,
@@ -85,6 +87,7 @@ export default function CreateScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <Text style={styles.title}>
         Create
       </Text>
@@ -107,7 +110,7 @@ export default function CreateScreen() {
               <Ionicons
                 name={tool.icon as any}
                 size={30}
-                color="#A78BFA"
+                color={colors.accent}
               />
             </View>
 
@@ -127,7 +130,7 @@ export default function CreateScreen() {
               <Ionicons
                 name="arrow-forward"
                 size={16}
-                color="#A78BFA"
+                color={colors.accent}
               />
             </View>
           </TouchableOpacity>
@@ -143,7 +146,7 @@ export default function CreateScreen() {
           <Ionicons
             name="mic-outline"
             size={28}
-            color="#666"
+            color={colors.textMuted}
           />
 
           <View style={{ marginLeft: 15 }}>
@@ -168,7 +171,7 @@ export default function CreateScreen() {
             <Ionicons
               name="musical-note"
               size={30}
-              color="#A78BFA"
+              color={colors.accent}
             />
 
             <View style={{ marginLeft: 15 }}>
@@ -193,7 +196,7 @@ export default function CreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
     padding: 24,
     paddingTop: 50,
   },
@@ -205,7 +208,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    color: "#888",
+    color: colors.textSoft,
     marginTop: 5,
     marginBottom: 30,
   },
@@ -218,17 +221,19 @@ const styles = StyleSheet.create({
 
   card: {
     width: "48%",
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 20,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   icon: {
     width: 55,
     height: 55,
     borderRadius: 16,
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -241,7 +246,7 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    color: "#777",
+    color: colors.textMuted,
     marginTop: 6,
     lineHeight: 18,
   },
@@ -254,7 +259,7 @@ const styles = StyleSheet.create({
   },
 
   openText: {
-    color: "#A78BFA",
+    color: colors.accent,
     fontSize: 13,
     fontWeight: "600",
   },
@@ -268,11 +273,13 @@ const styles = StyleSheet.create({
   },
 
   project: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     padding: 18,
     borderRadius: 18,
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   projectTitle: {

@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import React, { useState } from "react";
 
 import {
@@ -36,6 +38,7 @@ export default function CommunityScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
@@ -238,7 +241,7 @@ function PostCard({
               <Ionicons
                 name="earth"
                 size={12}
-                color="#777"
+                color={colors.textMuted}
               />
             </View>
           ) : (
@@ -255,7 +258,7 @@ function PostCard({
           <Ionicons
             name="ellipsis-horizontal"
             size={22}
-            color="#888"
+            color={colors.textSoft}
           />
         </TouchableOpacity>
       </View>
@@ -428,8 +431,8 @@ function PostCard({
             size={21}
             color={
               liked
-                ? "#A78BFA"
-                : "#AAAAAA"
+                ? colors.accent
+                : colors.textSoft
             }
           />
 
@@ -450,7 +453,7 @@ function PostCard({
           <Ionicons
             name="chatbubble-outline"
             size={20}
-            color="#AAAAAA"
+            color={colors.textSoft}
           />
 
           <Text style={styles.actionText}>
@@ -464,7 +467,7 @@ function PostCard({
           <Ionicons
             name="share-social-outline"
             size={21}
-            color="#AAAAAA"
+            color={colors.textSoft}
           />
 
           <Text style={styles.actionText}>
@@ -487,8 +490,8 @@ function PostCard({
             size={21}
             color={
               saved
-                ? "#A78BFA"
-                : "#AAAAAA"
+                ? colors.accent
+                : colors.textSoft
             }
           />
         </TouchableOpacity>
@@ -538,7 +541,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
 
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
   },
 
   content: {
@@ -580,7 +583,7 @@ const styles = StyleSheet.create({
   },
 
   communitySubtitle: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 13,
 
@@ -601,7 +604,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 16,
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     alignItems: "center",
     justifyContent: "center",
@@ -622,11 +625,13 @@ const styles = StyleSheet.create({
 
     marginHorizontal: 22,
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     padding: 5,
 
     borderRadius: 15,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   feedTabButton: {
@@ -640,11 +645,13 @@ const styles = StyleSheet.create({
   },
 
   feedTabButtonActive: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.activeSoft,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   feedTabText: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontWeight: "600",
 
@@ -670,7 +677,7 @@ const styles = StyleSheet.create({
   },
 
   emptyState: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 18,
 
@@ -679,6 +686,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 22,
 
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   emptyTitle: {
@@ -690,7 +699,7 @@ const styles = StyleSheet.create({
   },
 
   emptyText: {
-    color: "#666",
+    color: colors.textMuted,
 
     textAlign: "center",
 
@@ -698,11 +707,13 @@ const styles = StyleSheet.create({
   },
 
   postCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 20,
 
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   // =====================================
@@ -723,7 +734,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 24,
 
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
   },
 
   authorInfo: {
@@ -741,7 +752,7 @@ const styles = StyleSheet.create({
   },
 
   postTime: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 12,
 
@@ -759,7 +770,7 @@ const styles = StyleSheet.create({
   },
 
   sponsoredText: {
-    color: "#999",
+    color: colors.textSoft,
 
     fontSize: 12,
 
@@ -767,7 +778,7 @@ const styles = StyleSheet.create({
   },
 
   sponsoredDot: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 12,
   },
@@ -781,7 +792,7 @@ const styles = StyleSheet.create({
   // =====================================
 
   postContent: {
-    color: "#E5E5E5",
+    color: colors.text,
 
     fontSize: 15,
 
@@ -806,7 +817,7 @@ const styles = StyleSheet.create({
 
     aspectRatio: 16 / 9,
 
-    backgroundColor: "#101015",
+    backgroundColor: colors.surfaceDeep,
   },
 
   videoThumbnail: {
@@ -845,7 +856,7 @@ const styles = StyleSheet.create({
   // =====================================
 
   adFooter: {
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
 
     paddingHorizontal: 17,
     paddingVertical: 13,
@@ -868,7 +879,7 @@ const styles = StyleSheet.create({
   },
 
   adDescription: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 11,
 
@@ -876,7 +887,7 @@ const styles = StyleSheet.create({
   },
 
   ctaButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     paddingHorizontal: 17,
     paddingVertical: 10,
@@ -921,14 +932,14 @@ const styles = StyleSheet.create({
 
     borderRadius: 10,
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     alignItems: "center",
     justifyContent: "center",
   },
 
   counterText: {
-    color: "#777",
+    color: colors.textMuted,
 
     fontSize: 12,
   },
@@ -936,7 +947,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
 
-    backgroundColor: "#2A2A31",
+    backgroundColor: colors.surfaceMuted,
 
     marginHorizontal: 17,
   },
@@ -967,7 +978,7 @@ const styles = StyleSheet.create({
   },
 
   actionText: {
-    color: "#AAAAAA",
+    color: colors.textSoft,
 
     fontSize: 12,
 
@@ -975,7 +986,7 @@ const styles = StyleSheet.create({
   },
 
   actionTextActive: {
-    color: "#A78BFA",
+    color: colors.accent,
   },
 
   saveButton: {

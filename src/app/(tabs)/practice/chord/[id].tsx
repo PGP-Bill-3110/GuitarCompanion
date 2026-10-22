@@ -1,3 +1,5 @@
+import { colors } from "../../../../theme/colors";
+import AppGradientBackground from "../../../../components/ui/AppGradientBackground";
 import { useEffect, useState } from "react";
 
 import {
@@ -133,7 +135,7 @@ export default function ChordSongScreen() {
         <Ionicons
           name="alert-circle-outline"
           size={55}
-          color="#A78BFA"
+          color={colors.accent}
         />
 
         <Text style={styles.notFoundTitle}>
@@ -177,6 +179,7 @@ export default function ChordSongScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={
@@ -219,7 +222,7 @@ export default function ChordSongScreen() {
               color={
                 favorite
                   ? "#FFFFFF"
-                  : "#A78BFA"
+                  : colors.accent
               }
             />
           </TouchableOpacity>
@@ -309,7 +312,7 @@ export default function ChordSongScreen() {
               <Ionicons
                 name="text"
                 size={18}
-                color="#A78BFA"
+                color={colors.accent}
               />
 
               <Text
@@ -347,7 +350,7 @@ export default function ChordSongScreen() {
             >
               <ActivityIndicator
                 size="large"
-                color="#A78BFA"
+                color={colors.accent}
               />
 
               <Text
@@ -706,7 +709,7 @@ function isSectionTitle(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
   },
 
   content: {
@@ -723,7 +726,7 @@ const styles = StyleSheet.create({
   center: {
     flex: 1,
 
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
 
     alignItems: "center",
     justifyContent: "center",
@@ -744,14 +747,16 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   favoriteActive: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
   },
 
   title: {
@@ -765,7 +770,7 @@ const styles = StyleSheet.create({
   },
 
   artist: {
-    color: "#999",
+    color: colors.textSoft,
 
     fontSize: 16,
 
@@ -773,7 +778,7 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    color: "#666",
+    color: colors.textMuted,
 
     marginTop: 6,
   },
@@ -793,17 +798,19 @@ const styles = StyleSheet.create({
   },
 
   infoCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 13,
 
     paddingHorizontal: 17,
 
     paddingVertical: 11,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   infoLabel: {
-    color: "#666",
+    color: colors.textMuted,
 
     fontSize: 10,
 
@@ -833,7 +840,7 @@ const styles = StyleSheet.create({
 
     alignItems: "center",
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderRadius: 13,
 
@@ -861,12 +868,11 @@ const styles = StyleSheet.create({
 
     borderLeftWidth: 1,
     borderRightWidth: 1,
-
-    borderColor: "#292930",
+    borderColor: colors.border,
   },
 
   fontLabelText: {
-    color: "#CCCCCC",
+    color: colors.textSoft,
 
     fontSize: 13,
   },
@@ -897,7 +903,7 @@ const styles = StyleSheet.create({
   },
 
   loadingText: {
-    color: "#888",
+    color: colors.textSoft,
 
     marginTop: 15,
   },
@@ -919,7 +925,7 @@ const styles = StyleSheet.create({
   },
 
   errorHint: {
-    color: "#777",
+    color: colors.textMuted,
 
     marginTop: 10,
 
@@ -949,7 +955,7 @@ const styles = StyleSheet.create({
   },
 
   chordText: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontWeight: "bold",
 
@@ -957,7 +963,7 @@ const styles = StyleSheet.create({
   },
 
   lyricText: {
-    color: "#E5E5E5",
+    color: colors.text,
   },
 
   emptyLine: {
@@ -965,7 +971,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontSize: 18,
 
@@ -978,7 +984,7 @@ const styles = StyleSheet.create({
   },
 
   pageMarker: {
-    color: "#555",
+    color: colors.textDim,
 
     fontSize: 12,
 
@@ -990,7 +996,7 @@ const styles = StyleSheet.create({
   // =====================================
 
   practiceButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     borderRadius: 17,
 
@@ -1015,7 +1021,7 @@ const styles = StyleSheet.create({
   },
 
   practiceHint: {
-    color: "#666",
+    color: colors.textMuted,
 
     fontSize: 12,
 
@@ -1039,7 +1045,7 @@ const styles = StyleSheet.create({
   },
 
   returnButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     paddingHorizontal: 25,
 

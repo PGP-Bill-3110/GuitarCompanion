@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import React from "react";
 import {
     useEffect,
     useMemo,
@@ -12,6 +14,8 @@ import {
     View,
     Alert,
     TextInput,
+    Platform,
+    Linking,
 } from "react-native";
 
 import {
@@ -354,7 +358,7 @@ export default function CloudCommunityFeed({
         <Ionicons
           name="people-outline"
           size={36}
-          color="#666"
+          color={colors.textMuted}
         />
 
         <Text
@@ -391,7 +395,7 @@ export default function CloudCommunityFeed({
         <Ionicons
           name="newspaper-outline"
           size={36}
-          color="#666"
+          color={colors.textMuted}
         />
 
         <Text
@@ -427,7 +431,7 @@ export default function CloudCommunityFeed({
         <Ionicons
           name="chatbubbles-outline"
           size={36}
-          color="#666"
+          color={colors.textMuted}
         />
 
         <Text
@@ -712,7 +716,7 @@ export function CommunityPostCard({
         <Ionicons
           name="ellipsis-horizontal"
           size={20}
-          color="#777"
+          color={colors.textMuted}
         />
       </View>
 
@@ -739,6 +743,24 @@ export function CommunityPostCard({
         </View>
       )}
 
+      {post.type === "video" && post.mediaUrl && (
+        <View style={styles.mediaBox}>
+          {Platform.OS === "web" ? (
+            React.createElement("video", {
+              src: post.mediaUrl,
+              controls: true,
+              preload: "metadata",
+              playsInline: true,
+              style: { display: "block", width: "100%", maxHeight: 480, background: "#111" },
+            })
+          ) : (
+            <TouchableOpacity style={{ padding: 20 }} onPress={() => Linking.openURL(post.mediaUrl!)}>
+              <Text style={{ color: "#FFFFFF" }}>▶ Open Video</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+
       {/* PRESET */}
 
       {post.type ===
@@ -762,7 +784,7 @@ export function CommunityPostCard({
                 <Ionicons
                   name="options"
                   size={26}
-                  color="#A78BFA"
+                  color={colors.accent}
                 />
               </View>
 
@@ -910,8 +932,8 @@ export function CommunityPostCard({
             size={19}
             color={
               commentsOpen
-                ? "#A78BFA"
-                : "#888"
+                ? colors.accent
+                : colors.textSoft
             }
           />
 
@@ -963,7 +985,7 @@ export function CommunityPostCard({
                 setCommentText
               }
               placeholder="Viết bình luận..."
-              placeholderTextColor="#666"
+              placeholderTextColor={colors.textMuted}
               style={
                 styles.commentInput
               }
@@ -1145,7 +1167,7 @@ function PostLikeButton({
         color={
           likeData.liked
             ? "#EF4444"
-            : "#888"
+            : colors.textSoft
         }
       />
 
@@ -1365,8 +1387,8 @@ function CommentItem({
               size={15}
               color={
                 myReaction === "like"
-                  ? "#A78BFA"
-                  : "#777"
+                  ? colors.accent
+                  : colors.textMuted
               }
             />
 
@@ -1400,7 +1422,7 @@ function CommentItem({
               color={
                 myReaction === "dislike"
                   ? "#F87171"
-                  : "#777"
+                  : colors.textMuted
               }
             />
 
@@ -1462,13 +1484,15 @@ const styles =
   StyleSheet.create({
     card: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 20,
 
       padding: 18,
 
       marginBottom: 15,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     authorRow: {
@@ -1501,7 +1525,7 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1520,7 +1544,7 @@ const styles =
     },
 
     username: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1528,7 +1552,7 @@ const styles =
     },
 
     content: {
-      color: "#E5E5E5",
+      color: colors.text,
 
       fontSize: 14,
 
@@ -1542,18 +1566,20 @@ const styles =
       marginTop: 15,
       borderRadius: 16,
       overflow: "hidden",
-      backgroundColor: "#101015",
+      backgroundColor: colors.surfaceDeep,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     postImage: {
       width: "100%",
       aspectRatio: 16 / 9,
-      backgroundColor: "#101015",
+      backgroundColor: colors.surfaceDeep,
     },
 
     presetBox: {
       backgroundColor:
-        "#101015",
+        colors.surfaceDeep,
 
       borderRadius: 17,
 
@@ -1564,7 +1590,7 @@ const styles =
       borderWidth: 1,
 
       borderColor:
-        "#292930",
+        colors.border,
     },
 
     presetHeader: {
@@ -1582,7 +1608,7 @@ const styles =
       borderRadius: 13,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1597,7 +1623,7 @@ const styles =
     },
 
     presetCreator: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1605,7 +1631,7 @@ const styles =
     },
 
     presetCode: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontSize: 14,
 
@@ -1626,7 +1652,7 @@ const styles =
 
     tag: {
       backgroundColor:
-        "#292930",
+        colors.surfaceMuted,
 
       borderRadius: 8,
 
@@ -1635,14 +1661,14 @@ const styles =
     },
 
     tagText: {
-      color: "#AAA",
+      color: colors.textSoft,
 
       fontSize: 10,
     },
 
     savePresetButton: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 11,
 
@@ -1727,7 +1753,7 @@ const styles =
       borderTopWidth: 1,
 
       borderTopColor:
-        "#292930",
+        colors.border,
     },
 
     action: {
@@ -1739,13 +1765,13 @@ const styles =
     },
 
     actionText: {
-      color: "#888",
+      color: colors.textSoft,
 
       fontSize: 11,
     },
 
     commentActiveText: {
-      color: "#A78BFA",
+      color: colors.accent,
       fontWeight: "600",
     },
 
@@ -1757,7 +1783,7 @@ const styles =
       borderTopWidth: 1,
 
       borderTopColor:
-        "#292930",
+        colors.border,
     },
 
     commentInputRow: {
@@ -1777,7 +1803,7 @@ const styles =
       borderRadius: 11,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1796,7 +1822,7 @@ const styles =
       maxHeight: 100,
 
       backgroundColor:
-        "#101015",
+        colors.surfaceDeep,
 
       borderRadius: 13,
 
@@ -1807,6 +1833,8 @@ const styles =
 
       textAlignVertical:
         "top",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     sendCommentButton: {
@@ -1816,7 +1844,7 @@ const styles =
       borderRadius: 12,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1857,13 +1885,13 @@ const styles =
     },
 
     commentReactionText: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 10,
     },
 
     commentReactionActive: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontWeight: "bold",
     },
@@ -1887,7 +1915,7 @@ const styles =
       flex: 1,
 
       backgroundColor:
-        "#202027",
+        colors.surfaceRaised,
 
       borderRadius: 14,
 
@@ -1915,13 +1943,13 @@ const styles =
     },
 
     commentTime: {
-      color: "#555",
+      color: colors.textDim,
 
       fontSize: 9,
     },
 
     commentContent: {
-      color: "#D4D4D4",
+      color: colors.textSoft,
 
       fontSize: 13,
 
@@ -1931,7 +1959,7 @@ const styles =
     },
 
     noComments: {
-      color: "#666",
+      color: colors.textMuted,
 
       textAlign: "center",
 
@@ -1942,7 +1970,7 @@ const styles =
 
     empty: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -1962,7 +1990,7 @@ const styles =
     },
 
     emptyText: {
-      color: "#666",
+      color: colors.textMuted,
 
       textAlign: "center",
 

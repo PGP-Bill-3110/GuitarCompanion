@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useState,
@@ -479,7 +481,7 @@ async function handleAnalyzeRecording() {
         <Ionicons
           name="alert-circle-outline"
           size={40}
-          color="#666"
+          color={colors.textMuted}
         />
 
         <Text
@@ -539,6 +541,7 @@ const displayedAnalysis =
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -627,7 +630,7 @@ const displayedAnalysis =
                   : "document-text-outline"
               }
               size={28}
-              color="#A78BFA"
+              color={colors.accent}
             />
           </View>
 
@@ -744,7 +747,7 @@ const displayedAnalysis =
           <Ionicons
             name="speedometer-outline"
             size={21}
-            color="#A78BFA"
+            color={colors.accent}
           />
 
           <TextInput
@@ -755,7 +758,7 @@ const displayedAnalysis =
               setBpmText
             }
             placeholder="e.g. 90"
-            placeholderTextColor="#666"
+            placeholderTextColor={colors.textMuted}
             keyboardType="numeric"
             style={
               styles.bpmInput
@@ -832,7 +835,7 @@ const displayedAnalysis =
                     rating <=
                       selfRating
                       ? "#FBBF24"
-                      : "#777"
+                      : colors.textMuted
                   }
                 />
               </TouchableOpacity>
@@ -910,7 +913,7 @@ const displayedAnalysis =
             setNotes
           }
           placeholder="Ví dụ: Chuyển G → D còn chậm, cần luyện thêm..."
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           multiline
           maxLength={500}
           style={
@@ -1110,7 +1113,7 @@ const displayedAnalysis =
                       <Text
                         key={index}
                         style={{
-                          color: "#A7A7B0",
+                          color: colors.textSoft,
                           fontSize: 10,
                           lineHeight: 16,
                         }}
@@ -1242,7 +1245,7 @@ function MetricCard({
       <Ionicons
         name={icon}
         size={20}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text
@@ -1294,20 +1297,18 @@ const styles =
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     center: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
       alignItems: "center",
       justifyContent: "center",
     },
 
     loadingText: {
-      color: "#777",
+      color: colors.textMuted,
     },
 
     emptyTitle: {
@@ -1339,9 +1340,11 @@ const styles =
       height: 44,
       borderRadius: 14,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     deleteButton: {
@@ -1361,7 +1364,7 @@ const styles =
     },
 
     subtitle: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 11,
       marginTop: 3,
     },
@@ -1371,7 +1374,7 @@ const styles =
       alignItems: "center",
       gap: 13,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderRadius: 19,
       padding: 17,
     },
@@ -1381,7 +1384,7 @@ const styles =
       height: 54,
       borderRadius: 15,
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -1393,7 +1396,7 @@ const styles =
     },
 
     sessionMeta: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 10,
       marginTop: 4,
     },
@@ -1401,20 +1404,22 @@ const styles =
     durationBadge: {
       alignItems: "center",
       backgroundColor:
-        "#101015",
+        colors.surfaceDeep,
       borderRadius: 12,
       paddingHorizontal: 13,
       paddingVertical: 9,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     durationValue: {
-      color: "#A78BFA",
+      color: colors.accent,
       fontSize: 14,
       fontWeight: "bold",
     },
 
     durationLabel: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 8,
       marginTop: 2,
     },
@@ -1435,10 +1440,12 @@ const styles =
     metricCard: {
       flex: 1,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderRadius: 15,
       alignItems: "center",
       paddingVertical: 15,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     metricValue: {
@@ -1449,7 +1456,7 @@ const styles =
     },
 
     metricLabel: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 9,
       marginTop: 2,
     },
@@ -1459,9 +1466,11 @@ const styles =
       alignItems: "center",
       gap: 9,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderRadius: 14,
       paddingHorizontal: 14,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     bpmInput: {
@@ -1474,13 +1483,13 @@ const styles =
     },
 
     bpmLabel: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 11,
       fontWeight: "600",
     },
 
     hint: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 10,
       marginBottom: 10,
     },
@@ -1495,12 +1504,12 @@ const styles =
       height: 49,
       borderRadius: 13,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       alignItems: "center",
       justifyContent: "center",
       borderWidth: 1,
       borderColor:
-        "#292930",
+        colors.border,
     },
 
     ratingButtonActive: {
@@ -1518,10 +1527,10 @@ const styles =
 
     chip: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderWidth: 1,
       borderColor:
-        "#292930",
+        colors.border,
       borderRadius: 20,
       paddingHorizontal: 13,
       paddingVertical: 8,
@@ -1529,13 +1538,13 @@ const styles =
 
     chipActive: {
       backgroundColor:
-        "#7C3AED",
+        colors.action,
       borderColor:
-        "#8B5CF6",
+        colors.accent,
     },
 
     chipText: {
-      color: "#888",
+      color: colors.textSoft,
       fontSize: 11,
       fontWeight: "600",
     },
@@ -1547,11 +1556,11 @@ const styles =
     notesInput: {
       minHeight: 120,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderRadius: 15,
       borderWidth: 1,
       borderColor:
-        "#292930",
+        colors.border,
       padding: 14,
       color: "#FFFFFF",
       fontSize: 12,
@@ -1560,7 +1569,7 @@ const styles =
     },
 
     noteCounter: {
-      color: "#555",
+      color: colors.textDim,
       fontSize: 9,
       textAlign: "right",
       marginTop: 5,
@@ -1571,7 +1580,7 @@ const styles =
       alignItems: "center",
       justifyContent: "center",
       gap: 8,
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
       borderRadius: 14,
       paddingVertical: 13,
       marginTop: 12,
@@ -1622,12 +1631,12 @@ const styles =
     },
 
     uploadInfoLabel: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 10,
     },
 
     uploadInfoValue: {
-      color: "#BBBBBB",
+      color: colors.textSoft,
       fontSize: 10,
       flex: 1,
       textAlign: "right",
@@ -1656,12 +1665,12 @@ const styles =
       alignItems: "center",
       gap: 13,
       backgroundColor:
-        "#17171D",
+        colors.surface,
       borderRadius: 17,
       padding: 16,
       borderWidth: 1,
       borderColor:
-        "#312747",
+        colors.borderAccent,
     },
 
     aiIcon: {
@@ -1669,7 +1678,7 @@ const styles =
       height: 49,
       borderRadius: 14,
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -1681,7 +1690,7 @@ const styles =
     },
 
     aiDescription: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 10,
       lineHeight: 16,
       marginTop: 4,
@@ -1700,7 +1709,7 @@ const styles =
       justifyContent: "center",
       gap: 8,
       backgroundColor:
-        "#7C3AED",
+        colors.action,
       borderRadius: 14,
       paddingVertical: 14,
       marginTop: 22,
@@ -1717,4 +1726,3 @@ const styles =
     },
   });
 
-  

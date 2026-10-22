@@ -28,7 +28,8 @@ import type {
 export type CloudPostType =
   | "text"
   | "preset"
-  | "image";
+  | "image"
+  | "video";
 
 export type CommentReactionType =
   | "like"
@@ -61,7 +62,7 @@ mediaPath:
   string | null;
 
 mediaType:
-  "image" | null;
+  "image" | "video" | null;
 
   presetId: string | null;
 
@@ -225,9 +226,8 @@ mediaPath:
   null,
 
 mediaType:
-  input.type ===
-  "image"
-    ? "image"
+  input.type === "image" || input.type === "video"
+    ? input.type
     : null,
 
         presetId,

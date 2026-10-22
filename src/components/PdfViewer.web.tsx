@@ -1,3 +1,4 @@
+import { colors } from "../theme/colors";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 
@@ -314,7 +315,7 @@ const styles: Record<
     display: "flex",
     flexDirection: "column",
 
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
   },
 
   toolbar: {
@@ -327,7 +328,7 @@ const styles: Record<
 
     gap: 10,
 
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
 
     borderBottom:
       "1px solid #303038",
@@ -351,7 +352,7 @@ const styles: Record<
     width: 1,
     height: 28,
 
-    backgroundColor: "#303038",
+    backgroundColor: colors.surfaceMuted,
 
     flexShrink: 0,
   },
@@ -364,7 +365,7 @@ const styles: Record<
 
     borderRadius: 10,
 
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
 
     color: "#FFFFFF",
 
@@ -382,7 +383,7 @@ const styles: Record<
 
     borderRadius: 10,
 
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
 
     color: "#FFFFFF",
 
@@ -402,9 +403,9 @@ const styles: Record<
 
     borderRadius: 10,
 
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
 
-    color: "#DDDDDD",
+    color: colors.textSoft,
 
     cursor: "pointer",
 
@@ -424,7 +425,7 @@ const styles: Record<
   zoom: {
     minWidth: 47,
 
-    color: "#AAAAAA",
+    color: colors.textSoft,
 
     textAlign: "center",
 
@@ -439,7 +440,7 @@ const styles: Record<
     WebkitOverflowScrolling:
       "touch",
 
-    backgroundColor: "#202027",
+    backgroundColor: colors.surfaceRaised,
 
     padding: "16px 0",
   },
@@ -468,11 +469,11 @@ const styles: Record<
 
     gap: 10,
 
-    color: "#AAAAAA",
+    color: colors.textSoft,
   },
 
   loadingIcon: {
-    color: "#A78BFA",
+    color: colors.accent,
 
     fontSize: 35,
   },

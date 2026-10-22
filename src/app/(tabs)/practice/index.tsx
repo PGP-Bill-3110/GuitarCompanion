@@ -1,3 +1,5 @@
+import { colors } from "../../../theme/colors";
+import AppGradientBackground from "../../../components/ui/AppGradientBackground";
 import { useState } from "react";
 import {
   View,
@@ -38,6 +40,7 @@ export default function PracticeScreen() {
 
   return (
     <View style={styles.container}>
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -66,7 +69,7 @@ export default function PracticeScreen() {
             <Ionicons
               name="stats-chart"
               size={22}
-              color="#A78BFA"
+              color={colors.accent}
             />
           </View>
 
@@ -83,7 +86,7 @@ export default function PracticeScreen() {
           <Ionicons
             name="chevron-forward"
             size={20}
-            color="#666"
+            color={colors.textMuted}
           />
         </TouchableOpacity>
 
@@ -104,7 +107,7 @@ export default function PracticeScreen() {
               color={
                 activeTab === "chords"
                   ? "#FFFFFF"
-                  : "#777"
+                  : colors.textMuted
               }
             />
 
@@ -133,7 +136,7 @@ export default function PracticeScreen() {
               color={
                 activeTab === "scores"
                   ? "#FFFFFF"
-                  : "#777"
+                  : colors.textMuted
               }
             />
 
@@ -155,13 +158,13 @@ export default function PracticeScreen() {
           <Ionicons
             name="search"
             size={20}
-            color="#777"
+            color={colors.textMuted}
           />
 
           <TextInput
             style={styles.searchInput}
             placeholder="Search songs or artists..."
-            placeholderTextColor="#666"
+            placeholderTextColor={colors.textMuted}
             value={search}
             onChangeText={setSearch}
           />
@@ -182,7 +185,7 @@ export default function PracticeScreen() {
             <Ionicons
               name="musical-notes-outline"
               size={45}
-              color="#555"
+              color={colors.textDim}
             />
 
             <Text style={styles.emptyTitle}>
@@ -218,7 +221,7 @@ export default function PracticeScreen() {
                       : "document-text"
                   }
                   size={28}
-                  color="#A78BFA"
+                  color={colors.accent}
                 />
               </View>
 
@@ -259,7 +262,7 @@ export default function PracticeScreen() {
               <Ionicons
                 name="chevron-forward"
                 size={22}
-                color="#555"
+                color={colors.textDim}
               />
             </TouchableOpacity>
           ))
@@ -272,7 +275,7 @@ export default function PracticeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0B0F",
+    backgroundColor: "#355C7D",
   },
 
   content: {
@@ -294,7 +297,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    color: "#888",
+    color: colors.textSoft,
     marginTop: 5,
   },
 
@@ -302,17 +305,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 17,
     padding: 14,
     marginTop: 22,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   historyIcon: {
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -324,17 +329,19 @@ const styles = StyleSheet.create({
   },
 
   historyText: {
-    color: "#666",
+    color: colors.textMuted,
     fontSize: 10,
     marginTop: 4,
   },
 
   tabContainer: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 16,
     flexDirection: "row",
     padding: 5,
     marginTop: 28,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   tabButton: {
@@ -348,11 +355,13 @@ const styles = StyleSheet.create({
   },
 
   activeTabButton: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.activeSoft,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   tabText: {
-    color: "#777",
+    color: colors.textMuted,
     fontWeight: "600",
   },
 
@@ -363,10 +372,12 @@ const styles = StyleSheet.create({
   searchBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 15,
     paddingHorizontal: 15,
     marginTop: 22,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   searchInput: {
@@ -386,18 +397,20 @@ const styles = StyleSheet.create({
   },
 
   songCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 18,
     padding: 17,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   songIcon: {
     width: 55,
     height: 55,
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -415,7 +428,7 @@ const styles = StyleSheet.create({
   },
 
   artist: {
-    color: "#888",
+    color: colors.textSoft,
     marginTop: 4,
   },
 
@@ -427,14 +440,16 @@ const styles = StyleSheet.create({
   },
 
   badge: {
-    backgroundColor: "#25252D",
+    backgroundColor: colors.surfaceMuted,
     paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   badgeText: {
-    color: "#AAA",
+    color: colors.textSoft,
     fontSize: 11,
   },
 
@@ -451,7 +466,7 @@ const styles = StyleSheet.create({
   },
 
   emptyText: {
-    color: "#777",
+    color: colors.textMuted,
     marginTop: 5,
   },
 });

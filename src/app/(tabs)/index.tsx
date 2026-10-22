@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   View,
   Text,
@@ -16,6 +18,7 @@ export default function HomeScreen() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+      <AppGradientBackground />
       <View style={styles.header}>
         <View>
           <Text style={styles.welcome}>Good evening 👋</Text>
@@ -45,7 +48,7 @@ export default function HomeScreen() {
 
       <View style={styles.practiceCard}>
         <View style={styles.practiceIcon}>
-          <Ionicons name="musical-notes" size={28} color="#A78BFA" />
+          <Ionicons name="musical-notes" size={28} color={colors.accent} />
         </View>
 
         <View style={styles.practiceInfo}>
@@ -66,7 +69,7 @@ export default function HomeScreen() {
 
       <View style={styles.aiCard}>
         <View style={styles.aiHeader}>
-          <Ionicons name="sparkles" size={28} color="#A78BFA" />
+          <Ionicons name="sparkles" size={28} color={colors.accent} />
 
           <View style={{ marginLeft: 12 }}>
             <Text style={styles.aiTitle}>Nice progress!</Text>
@@ -100,14 +103,14 @@ export default function HomeScreen() {
 function QuickAction({ icon, title }: { icon: any; title: string }) {
   return (
     <TouchableOpacity style={styles.quickButton}>
-      <Ionicons name={icon} size={25} color="#A78BFA" />
+      <Ionicons name={icon} size={25} color={colors.accent} />
       <Text style={styles.quickText}>{title}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0B0B0F" },
+  container: { flex: 1, backgroundColor: "#355C7D" },
   content: { padding: 24, paddingTop: 50, paddingBottom: 40 },
 
   header: {
@@ -117,28 +120,30 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
 
-  welcome: { color: "#888" },
+  welcome: { color: colors.textSoft },
   title: { color: "#fff", fontSize: 28, fontWeight: "bold" },
 
   avatar: {
     width: 45,
     height: 45,
     borderRadius: 25,
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
     justifyContent: "center",
     alignItems: "center",
   },
 
   streakCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 22,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
-  label: { color: "#777", fontSize: 12 },
+  label: { color: colors.textMuted, fontSize: 12 },
   streakRow: { flexDirection: "row", alignItems: "baseline", marginTop: 8 },
   fire: { fontSize: 25 },
   streakNumber: {
@@ -147,7 +152,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 5,
   },
-  days: { color: "#888", marginLeft: 6 },
+  days: { color: colors.textSoft, marginLeft: 6 },
 
   sectionTitle: {
     color: "#fff",
@@ -158,45 +163,49 @@ const styles = StyleSheet.create({
   },
 
   practiceCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 18,
     padding: 18,
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   practiceIcon: {
     width: 55,
     height: 55,
     borderRadius: 15,
-    backgroundColor: "#251B3D",
+    backgroundColor: colors.accentSoft,
     justifyContent: "center",
     alignItems: "center",
   },
 
   practiceInfo: { flex: 1, marginLeft: 14 },
   practiceTitle: { color: "#fff", fontSize: 17, fontWeight: "bold" },
-  chords: { color: "#A78BFA", marginTop: 4 },
-  description: { color: "#888", marginTop: 4 },
+  chords: { color: colors.accent, marginTop: 4 },
+  description: { color: colors.textSoft, marginTop: 4 },
 
   playButton: {
     width: 45,
     height: 45,
     borderRadius: 25,
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
     justifyContent: "center",
     alignItems: "center",
   },
 
   aiCard: {
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 18,
     padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   aiHeader: { flexDirection: "row", alignItems: "center" },
   aiTitle: { color: "#fff", fontSize: 17, fontWeight: "bold" },
-  aiText: { color: "#888", marginTop: 3 },
+  aiText: { color: colors.textSoft, marginTop: 3 },
 
   progressHeader: {
     flexDirection: "row",
@@ -204,11 +213,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  progressValue: { color: "#A78BFA", fontWeight: "bold" },
+  progressValue: { color: colors.accent, fontWeight: "bold" },
 
   progressBackground: {
     height: 8,
-    backgroundColor: "#292930",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 10,
     marginTop: 8,
   },
@@ -216,7 +225,7 @@ const styles = StyleSheet.create({
   progressBar: {
     width: "82%",
     height: 8,
-    backgroundColor: "#7C3AED",
+    backgroundColor: colors.action,
     borderRadius: 10,
   },
 
@@ -224,10 +233,12 @@ const styles = StyleSheet.create({
 
   quickButton: {
     flex: 1,
-    backgroundColor: "#17171D",
+    backgroundColor: colors.surface,
     borderRadius: 16,
     paddingVertical: 20,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 
   quickText: { color: "#fff", marginTop: 8 },

@@ -1,92 +1,43 @@
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+const API_URL = (process.env.EXPO_PUBLIC_AI_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
-import {
-  storage,
-} from "../config/firebase";
-
+export type CommunityMediaType = "image" | "video";
 export interface UploadedMedia {
   url: string;
-
   path: string;
-
   contentType: string;
+  mediaType: CommunityMediaType;
 }
 
-export async function uploadCommunityImage(
-  uid: string,
-  uri: string
+export async function uploadCommunityMedia(
+  _uid: string,
+  uri: string,
+  contentType?: string,
+  filename?: string
 ): Promise<UploadedMedia> {
-  const response =
-    await fetch(uri);
-
-  const blob =
-    await response.blob();
-
-  const contentType =
-    blob.type ||
-    "image/jpeg";
-
-  const extension =
-    getExtensionFromType(
-      contentType
-    );
-
-  const fileName =
-    `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${extension}`;
-
-  const path =
-    `community/${uid}/images/${fileName}`;
-
-  const storageRef =
-    ref(
-      storage,
-      path
-    );
-
-  await uploadBytes(
-    storageRef,
-    blob,
-    {
-      contentType,
-    }
-  );
-
-  const url =
-    await getDownloadURL(
-      storageRef
-    );
-
+  const response = await fetch(uri);
+  if (!response.ok) throw new Error("Cannot read selected media.");
+  const blob = await response.blob();
+  const type = contentType || blob.type || (filename?.toLowerCase().endsWith(".mov") ? "video/quicktime" : "application/octet-stream");
+  const isVideo = type.startsWith("video/");
+  const max = isVideo ? 80 * 1024 * 1024 : 10 * 1024 * 1024;
+  if (blob.size > max) throw new Error(isVideo ? "Video exceeds 80 MB" : "Image exceeds 10 MB");
+  const body = new FormData();
+  const ext = type === "video/quicktime" ? "mov" : type === "video/mp4" ? "mp4" : type === "video/webm" ? "webm" : type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
+  body.append("file", new Blob([blob], { type }), filename || "post." + ext);
+  const uploaded = await fetch(API_URL + "/api/community/upload-media", { method: "POST", body });
+  if (!uploaded.ok) {
+    let message = "Upload failed (" + uploaded.status + ")";
+    try { message = (await uploaded.json()).detail || message; } catch {}
+    throw new Error(message);
+  }
+  const result = await uploaded.json();
   return {
-    url,
-    path,
-    contentType,
+    url: API_URL + result.mediaUrl,
+    path: result.mediaPath,
+    contentType: result.contentType,
+    mediaType: result.mediaType,
   };
 }
-
-function getExtensionFromType(
-  contentType: string
-) {
-  if (
-    contentType.includes(
-      "png"
-    )
-  ) {
-    return "png";
-  }
-
-  if (
-    contentType.includes(
-      "webp"
-    )
-  ) {
-    return "webp";
-  }
-
-  return "jpg";
+export async function uploadCommunityImage(uid: string, uri: string, contentType?: string, filename?: string) {
+  return uploadCommunityMedia(uid, uri, contentType, filename);
 }

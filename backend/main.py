@@ -1,5 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
+from fastapi.staticfiles import StaticFiles
 
 from fastapi import (
     FastAPI,
@@ -102,6 +103,69 @@ TEMP_DIR.mkdir(
     parents=True,
     exist_ok=True,
 )
+
+
+# =========================================================
+# COMMUNITY MEDIA: LOCAL DEMO SERVER
+# Keep backend bound to 127.0.0.1 for local demo.
+# =========================================================
+COMMUNITY_MEDIA_DIR = UPLOAD_DIR / "community"
+(COMMUNITY_MEDIA_DIR / "images").mkdir(parents=True, exist_ok=True)
+(COMMUNITY_MEDIA_DIR / "videos").mkdir(parents=True, exist_ok=True)
+
+app.mount(
+    "/media/community",
+    StaticFiles(directory=COMMUNITY_MEDIA_DIR),
+    name="community-media",
+)
+
+MEDIA_TYPES = {
+    "image/jpeg": ("images", ".jpg", 10 * 1024 * 1024),
+    "image/png": ("images", ".png", 10 * 1024 * 1024),
+    "image/webp": ("images", ".webp", 10 * 1024 * 1024),
+    "video/mp4": ("videos", ".mp4", 80 * 1024 * 1024),
+    "video/webm": ("videos", ".webm", 80 * 1024 * 1024),
+    "video/quicktime": ("videos", ".mov", 80 * 1024 * 1024),
+}
+
+def valid_media_signature(content_type: str, data: bytes) -> bool:
+    if content_type == "image/jpeg":
+        return data.startswith(b"\xff\xd8\xff")
+    if content_type == "image/png":
+        return data.startswith(b"\x89PNG\r\n\x1a\n")
+    if content_type == "image/webp":
+        return data[:4] == b"RIFF" and data[8:12] == b"WEBP"
+    if content_type in ("video/mp4", "video/quicktime"):
+        return len(data) >= 12 and data[4:8] == b"ftyp"
+    if content_type == "video/webm":
+        return data.startswith(b"\x1a\x45\xdf\xa3")
+    return False
+
+@app.post("/api/community/upload-media")
+async def upload_community_media(file: UploadFile = File(...)):
+    media_type = (file.content_type or "").split(";")[0].strip().lower()
+    if media_type not in MEDIA_TYPES:
+        raise HTTPException(status_code=415, detail="Unsupported image/video format")
+    folder, extension, max_bytes = MEDIA_TYPES[media_type]
+    # Read max+1 so oversized uploads don't exhaust app memory.
+    content = await file.read(max_bytes + 1)
+    if not content:
+        raise HTTPException(status_code=400, detail="Empty file")
+    if len(content) > max_bytes:
+        raise HTTPException(status_code=413, detail="Media too large")
+    if not valid_media_signature(media_type, content):
+        raise HTTPException(status_code=415, detail="File content does not match media format")
+    filename = uuid4().hex + extension
+    (COMMUNITY_MEDIA_DIR / folder / filename).write_bytes(content)
+    relative_path = f"/media/community/{folder}/{filename}"
+    return {
+        "success": True,
+        "mediaType": "image" if folder == "images" else "video",
+        "mediaUrl": relative_path,
+        "mediaPath": f"community/{folder}/{filename}",
+        "contentType": media_type,
+        "size": len(content),
+    }
 
 
 # =========================================================

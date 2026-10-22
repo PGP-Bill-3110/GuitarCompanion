@@ -1,3 +1,5 @@
+import { colors } from "../../theme/colors";
+import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
   useEffect,
   useState,
@@ -552,6 +554,7 @@ export default function PublicProfileScreen() {
         styles.container
       }
     >
+      <AppGradientBackground />
       <ScrollView
         contentContainerStyle={
           styles.content
@@ -686,7 +689,7 @@ export default function PublicProfileScreen() {
                 size={18}
                 color={
                   following
-                    ? "#A78BFA"
+                    ? colors.accent
                     : "#FFFFFF"
                 }
               />
@@ -813,7 +816,7 @@ export default function PublicProfileScreen() {
             <Ionicons
               name="musical-notes"
               size={21}
-              color="#A78BFA"
+              color={colors.accent}
             />
 
             <Text
@@ -1083,7 +1086,7 @@ function PublicPresetCard({
         <Ionicons
           name="options"
           size={25}
-          color="#A78BFA"
+          color={colors.accent}
         />
       </View>
 
@@ -1156,7 +1159,7 @@ function PublicPresetCard({
           <Ionicons
             name="person"
             size={14}
-            color="#A78BFA"
+            color={colors.accent}
           />
 
           <Text
@@ -1229,7 +1232,7 @@ function ProfileContentEmpty({
       <Ionicons
         name={icon}
         size={35}
-        color="#666"
+        color={colors.textMuted}
       />
 
       <Text
@@ -1287,8 +1290,7 @@ const styles =
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
     },
 
     content: {
@@ -1304,14 +1306,13 @@ const styles =
 
     center: {
       flex: 1,
-      backgroundColor:
-        "#0B0B0F",
+      backgroundColor: "#355C7D",
       alignItems: "center",
       justifyContent: "center",
     },
 
     loadingText: {
-      color: "#777",
+      color: colors.textMuted,
     },
 
     header: {
@@ -1337,10 +1338,12 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       alignItems: "center",
       justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     profileSection: {
@@ -1363,7 +1366,7 @@ const styles =
       borderRadius: 32,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -1384,7 +1387,7 @@ const styles =
     },
 
     username: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 13,
 
@@ -1392,7 +1395,7 @@ const styles =
     },
 
     bio: {
-      color: "#BDBDBD",
+      color: colors.textSoft,
 
       textAlign: "center",
 
@@ -1414,7 +1417,7 @@ const styles =
       minWidth: 150,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 13,
 
@@ -1441,12 +1444,12 @@ const styles =
       minWidth: 150,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderWidth: 1,
 
       borderColor:
-        "#34343E",
+        colors.border,
 
       borderRadius: 13,
 
@@ -1457,7 +1460,7 @@ const styles =
     },
 
     followingButtonText: {
-      color: "#A78BFA",
+      color: colors.accent,
 
       fontWeight: "bold",
     },
@@ -1470,7 +1473,7 @@ const styles =
       marginTop: 30,
 
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
@@ -1494,7 +1497,7 @@ const styles =
     },
 
     statLabel: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 11,
 
@@ -1506,18 +1509,20 @@ const styles =
       height: 33,
 
       backgroundColor:
-        "#303038",
+        colors.surfaceMuted,
     },
 
     card: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 20,
 
       padding: 20,
 
       marginTop: 22,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     cardTitleRow: {
@@ -1551,11 +1556,11 @@ const styles =
       borderTopWidth: 1,
 
       borderTopColor:
-        "#292930",
+        colors.border,
     },
 
     rowLabel: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 12,
     },
@@ -1574,7 +1579,7 @@ const styles =
 
     contentTabs: {
       flexDirection: "row",
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 16,
       padding: 5,
       marginTop: 22,
@@ -1591,11 +1596,11 @@ const styles =
     },
 
     contentTabActive: {
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.activeSoft,
     },
 
     contentTabText: {
-      color: "#777",
+      color: colors.textMuted,
       fontSize: 13,
       fontWeight: "600",
     },
@@ -1609,13 +1614,13 @@ const styles =
       height: 20,
       borderRadius: 10,
       paddingHorizontal: 6,
-      backgroundColor: "#292930",
+      backgroundColor: colors.surfaceMuted,
       alignItems: "center",
       justifyContent: "center",
     },
 
     tabCountText: {
-      color: "#BBBBBB",
+      color: colors.textSoft,
       fontSize: 9,
       fontWeight: "bold",
     },
@@ -1648,10 +1653,10 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
       gap: 14,
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: "#292930",
+      borderColor: colors.border,
       padding: 16,
       marginBottom: 11,
     },
@@ -1660,7 +1665,7 @@ const styles =
       width: 52,
       height: 52,
       borderRadius: 14,
-      backgroundColor: "#251B3D",
+      backgroundColor: colors.accentSoft,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -1672,14 +1677,14 @@ const styles =
     },
 
     publicPresetCode: {
-      color: "#A78BFA",
+      color: colors.accent,
       fontSize: 11,
       fontWeight: "700",
       marginTop: 3,
     },
 
     publicPresetDescription: {
-      color: "#888",
+      color: colors.textSoft,
       fontSize: 11,
       lineHeight: 16,
       marginTop: 6,
@@ -1693,14 +1698,14 @@ const styles =
     },
 
     publicPresetTag: {
-      backgroundColor: "#292930",
+      backgroundColor: colors.surfaceMuted,
       borderRadius: 8,
       paddingHorizontal: 8,
       paddingVertical: 4,
     },
 
     publicPresetTagText: {
-      color: "#AAAAAA",
+      color: colors.textSoft,
       fontSize: 9,
     },
 
@@ -1710,7 +1715,7 @@ const styles =
       alignItems: "center",
       justifyContent: "center",
       gap: 5,
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
       borderRadius: 11,
       paddingHorizontal: 13,
       paddingVertical: 9,
@@ -1736,20 +1741,20 @@ const styles =
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
-      backgroundColor: "#251B3D",
+      backgroundColor: colors.accentSoft,
       borderRadius: 10,
       paddingHorizontal: 10,
       paddingVertical: 7,
     },
 
     ownPresetText: {
-      color: "#A78BFA",
+      color: colors.accent,
       fontSize: 10,
       fontWeight: "600",
     },
 
     contentEmpty: {
-      backgroundColor: "#17171D",
+      backgroundColor: colors.surface,
       borderRadius: 18,
       alignItems: "center",
       paddingVertical: 45,
@@ -1764,7 +1769,7 @@ const styles =
     },
 
     contentEmptyText: {
-      color: "#666",
+      color: colors.textMuted,
       fontSize: 11,
       textAlign: "center",
       lineHeight: 17,

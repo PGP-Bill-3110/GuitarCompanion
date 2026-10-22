@@ -1,3 +1,4 @@
+import { colors } from "../theme/colors";
 import {
   View,
   Text,
@@ -20,7 +21,7 @@ export default function PdfViewer({
       <Ionicons
         name="document-text-outline"
         size={60}
-        color="#A78BFA"
+        color={colors.accent}
       />
 
       <Text style={styles.title}>
@@ -55,7 +56,7 @@ const styles =
       alignItems: "center",
       justifyContent: "center",
 
-      backgroundColor: "#202027",
+      backgroundColor: colors.surfaceRaised,
 
       padding: 30,
     },
@@ -70,7 +71,7 @@ const styles =
     },
 
     description: {
-      color: "#888",
+      color: colors.textSoft,
 
       textAlign: "center",
 
@@ -80,7 +81,7 @@ const styles =
     },
 
     button: {
-      backgroundColor: "#7C3AED",
+      backgroundColor: colors.action,
 
       paddingHorizontal: 25,
       paddingVertical: 14,

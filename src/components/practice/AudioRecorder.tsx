@@ -1,3 +1,4 @@
+import { colors } from "../../theme/colors";
 import {
   useEffect,
   useState,
@@ -395,7 +396,7 @@ export default function AudioRecorder({
           <Ionicons
             name="mic"
             size={24}
-            color="#A78BFA"
+            color={colors.accent}
           />
         </View>
 
@@ -768,14 +769,14 @@ const styles =
   StyleSheet.create({
     container: {
       backgroundColor:
-        "#17171D",
+        colors.surface,
 
       borderRadius: 18,
 
       borderWidth: 1,
 
       borderColor:
-        "#312747",
+        colors.borderAccent,
 
       padding: 16,
     },
@@ -795,7 +796,7 @@ const styles =
       borderRadius: 14,
 
       backgroundColor:
-        "#251B3D",
+        colors.accentSoft,
 
       alignItems: "center",
       justifyContent: "center",
@@ -810,7 +811,7 @@ const styles =
     },
 
     description: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 10,
 
@@ -874,7 +875,7 @@ const styles =
     },
 
     recordingHint: {
-      color: "#777",
+      color: colors.textMuted,
 
       fontSize: 9,
 
@@ -932,13 +933,15 @@ const styles =
       gap: 7,
 
       backgroundColor:
-        "#24242C",
+        colors.surfaceRaised,
 
       borderRadius: 11,
 
       paddingVertical: 10,
 
       marginTop: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
 
     playButtonText: {
@@ -959,7 +962,7 @@ const styles =
     },
 
     playbackTimeText: {
-      color: "#666",
+      color: colors.textMuted,
 
       fontSize: 9,
     },
@@ -973,7 +976,7 @@ const styles =
       gap: 8,
 
       backgroundColor:
-        "#7C3AED",
+        colors.action,
 
       borderRadius: 13,
 
