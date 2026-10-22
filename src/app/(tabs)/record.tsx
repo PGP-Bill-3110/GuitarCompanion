@@ -1,3 +1,4 @@
+import { uploadRecordingAudio } from "../../services/recordMediaService";
 import { colors } from "../../theme/colors";
 import AppGradientBackground from "../../components/ui/AppGradientBackground";
 import {
@@ -99,6 +100,8 @@ export default function RecordScreen() {
       setSaving(true);
       setMessage("");
 
+      const uploadedAudioUrl = await uploadRecordingAudio(audioUri);
+
       await createRecordProject(
         user.uid,
         {
@@ -109,7 +112,7 @@ export default function RecordScreen() {
             durationMillis /
             1000,
 
-          audioUri,
+          audioUri: uploadedAudioUrl,
         }
       );
 

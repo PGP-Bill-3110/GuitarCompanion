@@ -1,0 +1,6 @@
+2026/10/22-22:01:58.074 3cb8 Creating DB C:\GuitarCompanion\.edge-learning-check2-20261022\Default\IndexedDB\http_localhost_8081.indexeddb.leveldb since it was missing.
+2026/10/22-22:01:58.095 3cb8 Reusing MANIFEST C:\GuitarCompanion\.edge-learning-check2-20261022\Default\IndexedDB\http_localhost_8081.indexeddb.leveldb/MANIFEST-000001
+2026/10/22-22:01:59.950 42ec Level-0 table #5: started
+2026/10/22-22:01:59.952 42ec Level-0 table #5: 1264 bytes OK
+2026/10/22-22:01:59.955 42ec Delete type=0 #3
+2026/10/22-22:01:59.956 42ec Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)

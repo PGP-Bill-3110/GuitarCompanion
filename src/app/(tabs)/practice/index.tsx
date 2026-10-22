@@ -14,8 +14,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { songs } from "../../../data/songs";
+import { guitarTabs } from "../../../data/guitarTabs";
 
-type PracticeTab = "chords" | "scores";
+type PracticeTab = "chords" | "tabs" | "scores";
 
 export default function PracticeScreen() {
   const [activeTab, setActiveTab] =
@@ -27,7 +28,7 @@ export default function PracticeScreen() {
     const matchesType =
       activeTab === "chords"
         ? song.type === "chord"
-        : song.type === "score";
+        : activeTab === "scores" && song.type === "score";
 
     const keyword = search.toLowerCase();
 
@@ -36,6 +37,11 @@ export default function PracticeScreen() {
       song.artist.toLowerCase().includes(keyword);
 
     return matchesType && matchesSearch;
+  });
+
+  const filteredTabs = guitarTabs.filter((tab) => {
+    const keyword = search.trim().toLowerCase();
+    return (tab.title + " " + tab.subtitle + " " + tab.key).toLowerCase().includes(keyword);
   });
 
   return (
@@ -54,6 +60,24 @@ export default function PracticeScreen() {
             </Text>
           </View>
         </View>
+
+        {/* LEARNING PATH */}
+        <TouchableOpacity
+          style={styles.learningCard}
+          onPress={() => router.push("/learning-path" as any)}
+          accessibilityRole="button"
+          accessibilityLabel="Mở lộ trình học guitar"
+        >
+          <View style={styles.learningIcon}>
+            <Ionicons name="school-outline" size={26} color={colors.accent} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.learningEyebrow}>START LEARNING</Text>
+            <Text style={styles.learningTitle}>Beginner Learning Path</Text>
+            <Text style={styles.learningHint}>12 bài học · 4 module · Có lưu tiến độ</Text>
+          </View>
+          <Ionicons name="arrow-forward-circle" size={28} color={colors.accent} />
+        </TouchableOpacity>
 
         {/* PRACTICE HISTORY */}
 
@@ -125,6 +149,23 @@ export default function PracticeScreen() {
           <TouchableOpacity
             style={[
               styles.tabButton,
+              activeTab === "tabs" && styles.activeTabButton,
+            ]}
+            onPress={() => setActiveTab("tabs")}
+          >
+            <Ionicons
+              name="list-outline"
+              size={19}
+              color={activeTab === "tabs" ? "#FFFFFF" : colors.textMuted}
+            />
+            <Text style={[styles.tabText, activeTab === "tabs" && styles.activeTabText]}>
+              Guitar Tabs
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
               activeTab === "scores" &&
                 styles.activeTabButton,
             ]}
@@ -147,7 +188,7 @@ export default function PracticeScreen() {
                   styles.activeTabText,
               ]}
             >
-              Sheet / Tabs
+              Sheet Music
             </Text>
           </TouchableOpacity>
         </View>
@@ -163,7 +204,7 @@ export default function PracticeScreen() {
 
           <TextInput
             style={styles.searchInput}
-            placeholder="Search songs or artists..."
+            placeholder={activeTab === "tabs" ? "Search guitar exercises..." : "Search songs or artists..."}
             placeholderTextColor={colors.textMuted}
             value={search}
             onChangeText={setSearch}
@@ -175,12 +216,48 @@ export default function PracticeScreen() {
         <Text style={styles.sectionTitle}>
           {activeTab === "chords"
             ? "Chord Songs"
-            : "Sheet Music & Tablature"}
+            : activeTab === "tabs" ? "Guitar Tab Exercises" : "Sheet Music"}
         </Text>
 
         {/* LIST */}
 
-        {filteredSongs.length === 0 ? (
+        {activeTab === "tabs" ? (
+          <View>
+            <View style={styles.tabIntro}>
+              <Ionicons name="information-circle-outline" size={20} color={colors.accent}/>
+              <Text style={styles.tabIntroText}>Bộ 4 bài luyện guitar tab do GuitarCompanion biên soạn. Chọn bài để xem sáu dây, nghe nốt mẫu và luyện cùng BPM.</Text>
+            </View>
+            {filteredTabs.length === 0 ? (
+              <View style={styles.empty}>
+                <Ionicons name="search-outline" size={40} color={colors.textMuted}/>
+                <Text style={styles.emptyTitle}>Không tìm thấy guitar tab</Text>
+                <Text style={styles.emptyText}>Thử từ khóa khác.</Text>
+              </View>
+            ) : filteredTabs.map((tab) => (
+              <TouchableOpacity
+                key={tab.id}
+                accessibilityRole="button"
+                accessibilityLabel={"Mở guitar tab " + tab.title}
+                style={styles.songCard}
+                onPress={() => router.push(("/practice/tab/" + tab.id) as any)}
+              >
+                <View style={styles.songIcon}>
+                  <Ionicons name="list-outline" color={colors.accent} size={26}/>
+                </View>
+                <View style={styles.songInfo}>
+                  <Text style={styles.songTitle}>{tab.title}</Text>
+                  <Text style={styles.artist}>{tab.subtitle}</Text>
+                  <View style={styles.metadata}>
+                    <View style={styles.badge}><Text style={styles.badgeText}>{tab.difficulty}</Text></View>
+                    <View style={styles.badge}><Text style={styles.badgeText}>{tab.bpm} BPM</Text></View>
+                    <View style={styles.badge}><Text style={styles.badgeText}>4 ô nhịp</Text></View>
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={22} color={colors.textDim}/>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : filteredSongs.length === 0 ? (
           <View style={styles.empty}>
             <Ionicons
               name="musical-notes-outline"
@@ -301,6 +378,43 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
+  learningCard: {
+    marginTop: 22,
+    padding: 18,
+    borderRadius: 20,
+    backgroundColor: colors.surfaceRaised,
+    borderWidth: 1,
+    borderColor: colors.borderAccent,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 13,
+  },
+  learningIcon: {
+    width: 51,
+    height: 51,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.accentSoft,
+  },
+  learningEyebrow: {
+    color: colors.accent,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+  },
+  learningTitle: {
+    color: colors.text,
+    fontSize: 17,
+    fontWeight: "800",
+    marginTop: 5,
+  },
+  learningHint: {
+    color: colors.textSoft,
+    fontSize: 11,
+    marginTop: 5,
+  },
+
   historyButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -332,6 +446,24 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 10,
     marginTop: 4,
+  },
+
+  tabIntro: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    backgroundColor: colors.surfaceRaised,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
+  },
+  tabIntroText: {
+    flex: 1,
+    color: colors.textSoft,
+    fontSize: 12,
+    lineHeight: 19,
   },
 
   tabContainer: {

@@ -6,6 +6,9 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import {
@@ -128,4 +131,26 @@ export function subscribeRecordProjects(
       callback([]);
     }
   );
+}
+
+export function subscribeRecordProject(
+  uid: string, projectId: string, callback: (record: RecordProject | null) => void
+) {
+  return onSnapshot(
+    doc(db, "users", uid, "recordProjects", projectId),
+    snap => callback(snap.exists() ? ({ id: snap.id, ...snap.data() } as RecordProject) : null),
+    error => { console.error("Record project detail error:", error); callback(null); },
+  );
+}
+
+export async function renameRecordProject(uid: string, projectId: string, title: string) {
+  const name = title.trim();
+  if (!name) throw new Error("Project name is required");
+  await updateDoc(doc(db, "users", uid, "recordProjects", projectId), {
+    title: name, updatedAt: serverTimestamp(), updatedAtMs: Date.now(),
+  });
+}
+
+export async function deleteRecordProject(uid: string, projectId: string) {
+  await deleteDoc(doc(db, "users", uid, "recordProjects", projectId));
 }

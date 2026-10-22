@@ -76,3 +76,6 @@ backend/uploads/temp/*
 .env
 .env.local
 .env.*.local
+backend/uploads/records/
+
+backend/uploads/community/

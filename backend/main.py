@@ -49,6 +49,9 @@ app = FastAPI(
 
 
 # =========================================================
+from record_audio_routes import router as record_audio_router
+app.include_router(record_audio_router)
+
 # CORS
 # =========================================================
 

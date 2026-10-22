@@ -161,7 +161,9 @@ export default function CreateScreen() {
         </View>
       ) : (
         projects.slice(0, 5).map((project) => (
-          <View
+          <TouchableOpacity
+            onPress={() => router.push(`/record-project/${project.id}` as any)}
+            activeOpacity={0.86}
             key={project.id}
             style={[
               styles.project,
@@ -186,7 +188,7 @@ export default function CreateScreen() {
                 )}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))
       )}
     </View>
