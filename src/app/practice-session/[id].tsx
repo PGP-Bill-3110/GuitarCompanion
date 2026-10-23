@@ -43,6 +43,21 @@ import {
   AudioAnalysisResult,
   uploadPracticeAudio,
 } from "../../services/audioAnalysisService";
+import { getScoreReference } from "../../services/scoreReference";
+
+function sourceToAlphaTabRoute(sourceId: string | null, startBar?: number | null, endBar?: number | null, trackIndex?: number | null): string | null {
+  if (!sourceId) return null;
+  const tab = sourceId.match(/^tab:([a-z0-9-]+)$/);
+  const extra = startBar && endBar && startBar <= endBar
+    ? "&barStart=" + startBar + "&barEnd=" + endBar + (trackIndex != null ? "&track=" + trackIndex : "")
+    : "";
+  if (tab) return "/practice/score-studio?demo=" + encodeURIComponent(tab[1]) + extra;
+  const mutopia = sourceId.match(/^mutopia-carcassi-etude-(1|3|8)$/);
+  if (mutopia) return "/practice/score-studio?mutopia=" + mutopia[1].padStart(2, "0") + extra;
+  const local = sourceId.match(/^local:([a-zA-Z0-9-]+)$/);
+  if (local) return "/practice/score-studio?local=" + encodeURIComponent(local[1]) + extra;
+  return null;
+}
 
 const FOCUS_AREAS = [
   "Chords",
@@ -304,11 +319,31 @@ async function handleAnalyzeRecording() {
     // 1. SEND RECORDING TO AI BACKEND
     // =====================================
 
+    let dynamicReference: string | undefined;
+    const isDynamic = session.exerciseId?.startsWith("dynamic:") === true;
+    if (isDynamic) {
+      const key = session.exerciseId!.slice("dynamic:".length);
+      if (!session.sourceId || !key.startsWith(session.sourceId + "|track=")) {
+        throw new Error("Reference does not match this practice session.");
+      }
+      const reference = await getScoreReference(key);
+      if (!reference) {
+        throw new Error("Không tìm thấy bài tham chiếu cục bộ. Mở bản nhạc trong alphaTab trên cùng trình duyệt rồi thử lại.");
+      }
+      dynamicReference = JSON.stringify({
+        title: reference.title,
+        trackName: reference.trackName,
+        bpm: reference.bpm,
+        notes: reference.notes,
+        durationSeconds: reference.durationSeconds
+      });
+    }
     const result =
       await uploadPracticeAudio(
         audioUri,
-        session.exerciseId ||
-          undefined
+        isDynamic ? undefined : (session.exerciseId || undefined),
+        session.bpm ?? undefined,
+        dynamicReference
       );
 
 
@@ -322,6 +357,14 @@ async function handleAnalyzeRecording() {
     // 2. SHOW RESULT IN UI
     // =====================================
 
+    // Without a reference exercise, Basic Pitch only detects notes.
+    // Do not fabricate accuracy/timing scores for an arbitrary MusicXML/GP file.
+    const feedback = result.analysis ? (result.feedback ?? []) : [
+      "Basic Pitch đã nhận diện " + (result.noteCount ?? result.detectedNotes?.length ?? 0) + " nốt từ bản thu.",
+      "Bản nhạc này chưa có bài tham chiếu AI nên chưa thể chấm nốt hoặc nhịp so với sheet.",
+      "Nghe lại bản thu và luyện chậm từng đoạn. Tắt âm thanh alphaTab trong lúc thu để giảm nhiễu."
+    ];
+    result.feedback = feedback;
     setAnalysisResult(
       result
     );
@@ -375,6 +418,18 @@ async function handleAnalyzeRecording() {
           timingScore:
             result.analysis
               .timingScore,
+        }
+      );
+    } else {
+      await updatePracticeAnalysis(
+        user.uid,
+        session.id,
+        {
+          overallScore: null,
+          noteAccuracy: null,
+          timingScore: null,
+          audioId: result.audioId,
+          feedback
         }
       );
     }
@@ -683,6 +738,26 @@ const displayedAnalysis =
           </View>
         </View>
 
+        {sourceToAlphaTabRoute(session.sourceId, session.startBar, session.endBar, session.trackIndex) && (
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center", gap: 10,
+              backgroundColor: colors.surfaceRaised, borderColor: colors.borderAccent,
+              borderWidth: 1, borderRadius: 12, padding: 14, marginTop: 12 }}
+            onPress={() => router.push(sourceToAlphaTabRoute(session.sourceId, session.startBar, session.endBar, session.trackIndex) as any)}
+          >
+            <Ionicons name="musical-notes-outline" size={20} color={colors.accent} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: colors.text, fontWeight: "800", fontSize: 13 }}>
+                Mở lại bản nhạc trong alphaTab
+              </Text>
+              <Text style={{ color: colors.textSoft, fontSize: 11, marginTop: 3 }}>
+                Xem ký âm và luyện tập cùng bản nhạc của session này
+              </Text>
+            </View>
+            <Ionicons name="arrow-forward" color={colors.accent} size={18} />
+          </TouchableOpacity>
+        )}
+
         {/* CURRENT METRICS */}
 
         <Text
@@ -940,6 +1015,12 @@ const displayedAnalysis =
         </Text>
 
         <AudioRecorder
+          onRecordingCleared={() => {
+            setAudioUri(null);
+            setAudioDurationMillis(0);
+            setAnalysisResult(null);
+            setAnalysisError("");
+          }}
           onRecordingReady={(
             result
           ) => {
@@ -1014,7 +1095,7 @@ const displayedAnalysis =
           </View>
         )}
 
-        {(analysisResult || displayedAnalysis) && (
+        {(analysisResult || displayedAnalysis || Boolean(session.analysisUpdatedAtMs)) && (
           <View
             style={
               styles.analysisSuccess
@@ -1047,8 +1128,9 @@ const displayedAnalysis =
                     styles.analysisSuccessSubtitle
                   }
                 >
-                  {analysisResult?.analysis === null
-                    ? "Bài này chưa hỗ trợ AI scoring. Audio đã được phân tích tự do, không có điểm đánh giá."
+                  {analysisResult?.analysis === null ||
+                  (!analysisResult && session.analysisUpdatedAtMs && session.overallScore === null)
+                    ? "AI đã nhận diện nốt, nhưng chưa chấm theo bản nhạc tham chiếu."
                     : analysisResult
                       ? "Đã phân tích audio và tạo điểm đánh giá."
                       : "Kết quả AI đã lưu của buổi luyện tập."}

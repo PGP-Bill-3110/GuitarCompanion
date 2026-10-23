@@ -1,4 +1,5 @@
 from pathlib import Path
+from math import isfinite
 from uuid import uuid4
 from fastapi.staticfiles import StaticFiles
 
@@ -29,7 +30,10 @@ from services.pitch_analysis import (
 
 from services.note_processing import (
     process_single_notes,
+    filter_notes,
+    merge_same_notes,
 )
+from services.dynamic_score import parse_reference, score_reference
 
 from services.scoring_service import (
     align_note_sequences,
@@ -304,7 +308,13 @@ def build_simple_feedback(
 async def analyze_audio(
     audio: UploadFile = File(...),
     exerciseId: str | None = Form(None),
+    bpm: float | None = Form(None),
+    scoreJson: str | None = Form(None),
 ):
+
+    if exerciseId and scoreJson:
+        raise HTTPException(status_code=422, detail="Use exerciseId OR scoreJson, not both.")
+    parsed_score = parse_reference(scoreJson) if scoreJson else None
 
     # -----------------------------------------------------
     # 1. Determine extension
@@ -352,7 +362,7 @@ async def analyze_audio(
     try:
 
         content = (
-            await audio.read()
+            await audio.read(25 * 1024 * 1024 + 1)
         )
 
     except Exception as error:
@@ -370,6 +380,8 @@ async def analyze_audio(
         )
 
 
+    if len(content) > 25 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Recording too large (max 25 MB).")
     if len(content) == 0:
 
         raise HTTPException(
@@ -458,6 +470,26 @@ async def analyze_audio(
 
         raw_notes = pitch_result["detectedNotes"]
 
+        if parsed_score:
+            # Use polyphonic pitch events directly, rather than the monophonic
+            # process_single_notes() pipeline used by fixed exercises.
+            cleaned = merge_same_notes(filter_notes(raw_notes))
+            result = score_reference(parsed_score, cleaned, bpm)
+            note_accuracy = float(result["noteAccuracy"])
+            timing_score = float(result["timingScore"])
+            return {
+                "success": True,
+                "audioId": file_id,
+                "filename": filename,
+                "exercise": {"id": "dynamic-score", "title": parsed_score["title"]},
+                "message": "Experimental score-based analysis complete",
+                "analysis": result,
+                "feedback": build_simple_feedback(note_accuracy, timing_score) + [
+                    "Đánh giá thử nghiệm theo 60 giây đầu của một track.",
+                    "Hợp âm, đa âm và đoạn lặp phức tạp có thể gây sai số; không coi đây là điểm tuyệt đối."
+                ],
+            }
+
         if not exerciseId:
             return {
                 "success": True,
@@ -477,6 +509,12 @@ async def analyze_audio(
                 status_code=404,
                 detail="Exercise not found.",
             )
+        # The client stores the practice BPM in Firestore. Use it as the
+        # target tempo when users change alphaTab playback speed.
+        if bpm is not None:
+            if not isfinite(bpm) or bpm < 20 or bpm > 300:
+                raise HTTPException(status_code=422, detail="BPM must be between 20 and 300.")
+            exercise = {**exercise, "bpm": bpm}
 
         expected_events = [
             event

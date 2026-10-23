@@ -27,6 +27,14 @@ export default function LessonDetailScreen() {
   const next = learningLessons[index + 1];
   const previous = learningLessons[index - 1];
   const module = learningModules.find((item) => item.id === lesson?.moduleId);
+  const relatedChordNames: string[] | undefined = ({
+    "chord-em-am": ["Em", "Am"],
+    "chord-c-g": ["C", "G"],
+    "chord-d-e-a": ["D", "E", "A"],
+    "song-progression": ["G", "Em", "C", "D"],
+    "smooth-transitions": ["G", "Em", "C", "D"],
+    "first-performance": ["G", "Em", "C", "D"],
+  } as Record<string, string[]>)[id || ""];
   const relatedTabId: string | undefined = ({
     "guitar-strings": "open-strings",
     "tuning-basics": "open-strings",
@@ -138,6 +146,26 @@ export default function LessonDetailScreen() {
           })}
           <Text style={styles.smallProgress}>Đã thực hành {checked.length}/{lesson.exercises.length} thao tác</Text>
         </View>
+
+        {relatedChordNames && (
+          <TouchableOpacity
+            style={styles.relatedTab}
+            accessibilityRole="button"
+            accessibilityLabel={"Xem thế bấm " + relatedChordNames.join(", ")}
+            onPress={() => router.push(
+              ("/practice/chord-library?chord=" + encodeURIComponent(relatedChordNames[0])) as any
+            )}
+          >
+            <View style={styles.relatedTabIcon}>
+              <Ionicons name="musical-notes-outline" color={colors.accent} size={24}/>
+            </View>
+            <View style={{flex:1}}>
+              <Text style={styles.relatedTabTitle}>Xem sơ đồ hợp âm</Text>
+              <Text style={styles.muted}>{relatedChordNames.join(" · ")} · Thế bấm và âm mẫu</Text>
+            </View>
+            <Ionicons name="arrow-forward" color={colors.accent} size={19}/>
+          </TouchableOpacity>
+        )}
 
         {relatedTabId && (
           <TouchableOpacity

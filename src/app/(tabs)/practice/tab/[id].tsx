@@ -215,7 +215,7 @@ export default function GuitarTabDetail() {
           {tab.tips.map((tip, i) => <View key={i} style={styles.listRow}><Ionicons name="checkmark-circle-outline" color={colors.accent} size={17}/><Text style={styles.body}>{tip}</Text></View>)}
         </View>
 
-        <PracticeSessionBar sourceType="free" sourceId={tab.id} title={"Guitar Tab · " + tab.title} bpm={bpm}/>
+        <PracticeSessionBar sourceType="score" sourceId={"tab:" + tab.id} analysisExerciseId={"gc-tab-" + tab.id} title={"Guitar Tab · " + tab.title} bpm={bpm}/>
         <Text style={styles.license}>Nguồn: {tab.composer} · {tab.license} · Bài tập tự biên soạn</Text>
       </ScrollView>
     </View>

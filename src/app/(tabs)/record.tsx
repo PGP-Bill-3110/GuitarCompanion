@@ -215,6 +215,12 @@ export default function RecordScreen() {
         </Text>
 
         <AudioRecorder
+          onRecordingCleared={() => {
+            setAudioUri(null);
+            setDurationMillis(0);
+            setSaved(false);
+            setMessage("");
+          }}
           onRecordingReady={(
             result
           ) => {

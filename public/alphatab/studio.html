@@ -23,6 +23,14 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
 .details{font-size:12px;color:#cabbdc;margin:8px 0}
 .caption{font-size:11px;color:#b8aeca;margin-top:7px}
 #progress{font-size:12px;color:var(--purple);min-width:50px}
+.reference{margin-top:12px;background:#221e34;border-radius:12px;border:1px solid #6d5b87;padding:10px 14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.reference select{min-width:150px;max-width:240px}
+.reference-status{color:#dfcfed;flex:1;min-width:200px;font-size:12px}
+.section-control{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;background:#1d1d31;border:1px solid #6d5b87;border-radius:13px;margin-top:10px}
+.section-control select{min-width:66px}
+.section-control input{accent-color:#c7a8ea}
+.section-hint{font-size:12px;color:#dfcfed;flex:1;min-width:170px}
+
 .library{margin-top:12px;background:#151727;border:1px solid #615376;border-radius:14px;padding:12px 14px}
 .library h2{font-size:14px;margin:0;color:#f8f5fb}
 .library small{display:block;color:#bfb4cd;margin-top:2px}
@@ -63,12 +71,28 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
   <div id="libraryList" class="library-list"><div class="library-empty">Đang tải thư viện cục bộ...</div></div>
   <span class="library-status" id="libraryStatus"></span>
 </section>
+<section class="reference">
+<label>Track cần chấm <select id="referenceTrack" aria-label="Chọn track guitar" disabled><option value="">Chưa tải bản nhạc</option></select></label>
+<span class="reference-status" id="referenceStatus">Chọn track và đoạn luyện để tạo tham chiếu AI.</span>
+</section>
+<section class="section-control" aria-label="Section Practice">
+  <strong>Section Practice</strong>
+  <label>Từ ô <select id="startBar" aria-label="Ô nhịp bắt đầu" disabled></select></label>
+  <label>Đến ô <select id="endBar" aria-label="Ô nhịp kết thúc" disabled></select></label>
+  <button type="button" class="btn secondary" id="applySection" disabled>Áp dụng đoạn</button>
+  <label><input type="checkbox" id="repeatSection" checked/> Lặp đoạn</label>
+  <label><input type="checkbox" id="enableCountIn" checked/> Đếm vào</label>
+  <label><input type="checkbox" id="enableMetronome"/> Metronome</label>
+  <span class="section-hint" id="sectionHint">Bắt đầu với 4 ô đầu · tối đa 180 giây/đoạn.</span>
+</section>
 <div class="status" id="status">Đang khởi tạo trình đọc bản nhạc...</div>
 <div id="scoreShell"><div id="score"></div></div>
 <p class="details" id="details">Các file nhập được lưu cục bộ bằng IndexedDB. Không gửi lên Firebase hay FastAPI.</p>
 <p class="caption">Hỗ trợ MusicXML (.musicxml, .xml, .mxl), Guitar Pro (.gp3–5, .gpx, .gp), và alphaTex (.tex/.txt). Không hỗ trợ chuyển PDF hoặc MIDI thành Guitar Pro tự động.</p>
 <script src="/alphatab/alphaTab.min.js"></script>
 <script src="/alphatab/score-library.js"></script>
+<script src="/alphatab/score-reference.js"></script>
+<script src="/alphatab/score-extractor.js"></script>
 <script>
 (function () {
   "use strict";
@@ -87,9 +111,25 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
   let loaded = false;
   let lastWidth = 0;
   let pendingImport = null;
+  let activeScoreMeta = null;
   const store = window.GuitarCompanionScoreDB;
   const libraryList = document.getElementById("libraryList");
   const libraryStatus = document.getElementById("libraryStatus");
+  const referenceTrack = document.getElementById("referenceTrack");
+  const referenceStatus = document.getElementById("referenceStatus");
+  const startBarSelect = document.getElementById("startBar");
+  const endBarSelect = document.getElementById("endBar");
+  const applySectionButton = document.getElementById("applySection");
+  const sectionHint = document.getElementById("sectionHint");
+  const repeatSection = document.getElementById("repeatSection");
+  const countIn = document.getElementById("enableCountIn");
+  const metronome = document.getElementById("enableMetronome");
+  const initialParams = new URLSearchParams(location.search);
+  let currentSection = {startBar:1,endBar:4};
+  let sectionRequest = 0;
+  let activeScore = null;
+  let activeReference = null;
+
   function setLibraryMessage(msg, isError) {
     libraryStatus.textContent = msg;
     libraryStatus.style.color = isError ? "#fda4af" : "#c7a8ea";
@@ -148,6 +188,13 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
       loaded = false;
       setPlaybackControls();
       message("Đang mở file: " + record.name);
+      // Set the stable source ID before loading: alphaTab can fire scoreLoaded synchronously.
+      activeScoreMeta = {
+        sourceId: "local:" + record.id,
+        title: record.title || record.name,
+        exerciseId: null,
+        bpm: null
+      };
       if (record.format === "txt" || record.format === "tex") {
         api.load(alphaTab.importer.ScoreLoader.loadAlphaTex(new TextDecoder().decode(record.bytes)));
       } else if (!api.load(new Uint8Array(record.bytes))) {
@@ -171,9 +218,10 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
     pendingImport = null;
     if (!pending || !store) return;
     try {
-      await store.save({name:pending.name,bytes:pending.bytes,title:score.title || pending.name});
+      const saved = await store.save({name:pending.name,bytes:pending.bytes,title:score.title || pending.name});
       await refreshLibrary();
       setLibraryMessage("Đã lưu " + pending.name + " vào IndexedDB");
+      return saved;
     } catch(err) {
       setLibraryMessage("Bản nhạc mở được nhưng chưa lưu: " + String(err.message || err), true);
     }
@@ -181,6 +229,128 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
   document.getElementById("libraryRefresh").addEventListener("click",function () {void refreshLibrary();});
   void refreshLibrary();
 
+  async function sendScoreMetadata(score) {
+    // Store uploads first so a stable IndexedDB id can be used in Practice History.
+    if (pendingImport) {
+      const input = pendingImport;
+      const saved = await commitPendingImport(score);
+      activeScoreMeta = saved
+        ? { sourceId: "local:" + saved.id, title: saved.title || saved.name, exerciseId: null, bpm: null }
+        : { sourceId: null, title: score.title || input.name, exerciseId: null, bpm: null };
+    }
+    if (activeScore !== score) {
+      activeScore = score;
+      const bars = GuitarCompanionScoreExtractor.getBarCount(score);
+      if (!bars) return;
+      startBarSelect.replaceChildren();
+      endBarSelect.replaceChildren();
+      for (let i=1;i<=bars;i++) {
+        for(const select of [startBarSelect,endBarSelect]) {
+          const opt=document.createElement("option");opt.value=String(i);opt.textContent=String(i);
+          select.appendChild(opt);
+        }
+      }
+      const preferredStart=Number(initialParams.get("barStart"));
+      const preferredEnd=Number(initialParams.get("barEnd"));
+      const restore=Number.isInteger(preferredStart)&&preferredStart>=1&&
+        Number.isInteger(preferredEnd)&&preferredEnd>=preferredStart&&preferredEnd<=bars;
+      currentSection=restore ? {startBar:preferredStart,endBar:preferredEnd} :
+        {startBar:1,endBar:Math.min(4,bars)};
+      startBarSelect.value=String(currentSection.startBar);
+      endBarSelect.value=String(currentSection.endBar);
+      startBarSelect.disabled=false;endBarSelect.disabled=false;
+      applySectionButton.disabled=false;
+      referenceTrack.replaceChildren();
+      score.tracks.forEach((track,index)=>{
+        const item = document.createElement("option");
+        item.value = String(index);
+        item.textContent = (track.name || "Track "+(index+1)).slice(0,80);
+        referenceTrack.appendChild(item);
+      });
+      const requestedTrack=Number(initialParams.get("track"));
+      if(Number.isInteger(requestedTrack)&&requestedTrack>=0&&requestedTrack<score.tracks.length)
+        referenceTrack.value=String(requestedTrack);
+      referenceTrack.disabled = score.tracks.length <= 1;
+    }
+    // Never let an older async result replace the selected section.
+    const request=++sectionRequest;
+    await prepareReference(score,request);
+    const data = activeScoreMeta || { sourceId: null, title: score.title || "Untitled score", exerciseId: null, bpm: null };
+    window.parent.postMessage({
+      source: "gc-alphatab",
+      type: "score-ready",
+      sourceId: data.sourceId,
+      title: (data.title || score.title || "Untitled score").slice(0, 180),
+      exerciseId: data.exerciseId || null,
+      referenceKey: activeReference?.key || null,
+      referenceCount: activeReference?.notes?.length || 0,
+      startBar: activeReference?.startBar || null,
+      endBar: activeReference?.endBar || null,
+      trackIndex: activeReference?.trackIndex ?? null,
+      sectionDuration: activeReference?.durationSeconds || null,
+      referenceError: activeReference ? null : referenceStatus.textContent,
+      bpm: (activeReference?.bpm || data.bpm) ?
+        Math.round((activeReference?.bpm || data.bpm)*Number(speed.value)*10)/10 : null
+    }, location.origin);
+  }
+
+  async function prepareReference(score,request) {
+    activeReference = null;
+    let playable=false;
+    try {
+      const bounds=GuitarCompanionScoreExtractor.getPlaybackBounds(
+        score,Number(referenceTrack.value||0),currentSection);
+      if(request!==sectionRequest)return;
+      api.playbackRange={startTick:bounds.startTick,endTick:bounds.endTick};
+      playable=true;
+      api.isLooping=repeatSection.checked;
+      const extracted = GuitarCompanionScoreExtractor.extract(
+        score, Number(referenceTrack.value || 0), currentSection);
+      if(request!==sectionRequest) return;
+      api.countInVolume=countIn.checked ? 0.65 : 0;
+      api.metronomeVolume=metronome.checked ? 0.35 : 0;
+      const meta = activeScoreMeta;
+      if (!meta?.sourceId) throw new Error("Score has no stable local identifier");
+      const record = {
+        ...extracted,
+        key: meta.sourceId + "|track=" + extracted.trackIndex +
+          "|bars=" + extracted.startBar + "-" + extracted.endBar,
+        sourceId: meta.sourceId,
+        title: meta.title || score.title || "Untitled score"
+      };
+      await GuitarCompanionReferenceDB.save(record);
+      if(request!==sectionRequest) return;
+      activeReference=record;
+      sectionHint.textContent="Ô " + extracted.startBar + "–" + extracted.endBar +
+        " · " + extracted.durationSeconds.toFixed(1) + " giây · " + extracted.noteCount + " nốt";
+      referenceStatus.textContent = "AI ready · " + extracted.noteCount + " notes / selected section · " +
+        extracted.trackName + (extracted.polyphonic ? " · chord/polyphonic (experimental)" : "") +
+        (extracted.changingTempo ? " · tempo changes" : "");
+    } catch(error) {
+      if(request!==sectionRequest)return;
+      if(!playable) api.playbackRange=null;
+      sectionHint.textContent=playable
+        ? "Có thể phát đoạn đã chọn, nhưng AI chưa thể chấm: hãy rút ngắn đoạn dưới 180 giây."
+        : "Chọn đoạn ngắn hơn hoặc đoạn không băng qua repeat phức tạp.";
+      referenceStatus.textContent = "Chưa thể chấm đoạn này: " + (error.message || error);
+    }
+  }
+  referenceTrack.addEventListener("change",()=>{
+    if(activeScore)void sendScoreMetadata(activeScore);
+  });
+  applySectionButton.addEventListener("click",()=>{
+    if(!activeScore)return;
+    const from=Number(startBarSelect.value),to=Number(endBarSelect.value);
+    if(!Number.isInteger(from)||!Number.isInteger(to)||from>to){
+      sectionHint.textContent="Ô đầu phải nhỏ hơn hoặc bằng ô cuối.";return;
+    }
+    currentSection={startBar:from,endBar:to};
+    api.stop();
+    if(activeScore)void sendScoreMetadata(activeScore);
+  });
+  repeatSection.addEventListener("change",()=>{if(api)api.isLooping=repeatSection.checked;});
+  countIn.addEventListener("change",()=>{if(api)api.countInVolume=countIn.checked?0.65:0;});
+  metronome.addEventListener("change",()=>{if(api)api.metronomeVolume=metronome.checked?0.35:0;});
   function refreshLayout() {
     if (!api || !loaded) return;
     const width = root.parentElement ? root.parentElement.clientWidth : 0;
@@ -219,7 +389,7 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
     });
     api.scoreLoaded.on(function (score) {
       loaded = true;
-      void commitPendingImport(score);
+      void sendScoreMetadata(score);
       isPlaying = false;
       setPlaybackControls();
       info.textContent = (score.title || "Bản nhạc") + " · " +
@@ -263,6 +433,12 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
       loaded = false;
       setPlaybackControls();
       message("Đang tải tab mẫu: " + selected.title);
+      activeScoreMeta = {
+        sourceId: "tab:" + selected.id,
+        title: selected.title,
+        exerciseId: "gc-tab-" + selected.id,
+        bpm: Number(selected.tex.match(/\\tempo\s+(\d+)/)?.[1]) || null
+      };
       const score = alphaTab.importer.ScoreLoader.loadAlphaTex(selected.tex);
       api.load(score);
       info.textContent = "Bài mẫu nguyên bản · GuitarCompanion · " + selected.title;
@@ -280,6 +456,12 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
     message("Đang mở Etude " + parseInt(no, 10) + " từ Mutopia...");
     document.getElementById("mutopiaSelect").value = no;
     const url = "/mutopia/carcassi-op60-" + no + ".musicxml";
+    activeScoreMeta = {
+      sourceId: "mutopia-carcassi-etude-" + Number(no),
+      title: "Carcassi – Etude " + Number(no) + ", Op. 60",
+      exerciseId: null,
+      bpm: null
+    };
     if (!api.load(url)) message("Không thể mở MusicXML Mutopia.", true);
   }
   document.getElementById("mutopiaOpen").addEventListener("click", function () {
@@ -292,7 +474,10 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
   }).then(function(data) {
     demoScores = data;
     const params = new URLSearchParams(location.search);
-    if (["01","03","08"].includes(params.get("mutopia"))) {
+    const savedId = params.get("local");
+    if (savedId && savedId.length < 180) {
+      void openLibraryItem(savedId);
+    } else if (["01","03","08"].includes(params.get("mutopia"))) {
       openMutopia(params.get("mutopia"));
     } else if (params.get("sample") === "musicxml") {
       document.getElementById("xmlDemo").click();
@@ -309,6 +494,7 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
     loaded = false;
     setPlaybackControls();
     message("Đang tải MusicXML mẫu...");
+    activeScoreMeta = { sourceId: "studio-demo-melody", title: "First Melody on E", exerciseId: null, bpm: 72 };
     if (!api.load("/alphatab/demo-melody.musicxml")) {
       message("Không thể tải MusicXML mẫu.", true);
     }
@@ -327,6 +513,7 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
       message("Đang nhập file " + file.name + "...");
       const buffer = await file.arrayBuffer();
       pendingImport = {name:file.name,bytes:buffer};
+      activeScoreMeta = {sourceId:null,title:file.name,exerciseId:null,bpm:null};
       if (extension === "tex" || extension === "txt") {
         const score = alphaTab.importer.ScoreLoader.loadAlphaTex(new TextDecoder().decode(buffer));
         api.load(score);
@@ -342,7 +529,16 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
   });
   play.addEventListener("click",function () {if (api && loaded) api.playPause();});
   stop.addEventListener("click",function () {if (api) {api.stop();displayTime.textContent="0:00";isPlaying=false;setPlaybackControls();}});
-  speed.addEventListener("change",function () {if(api)api.playbackSpeed=Number(speed.value);});
+  speed.addEventListener("change",function () {
+      if (api) api.playbackSpeed = Number(speed.value);
+    if (activeReference || activeScoreMeta?.bpm) {
+      window.parent.postMessage({
+        source: "gc-alphatab", type: "tempo-changed",
+        sourceId: activeScoreMeta.sourceId,
+        bpm: Math.round((activeReference?.bpm || activeScoreMeta.bpm)*Number(speed.value)*10)/10
+      }, location.origin);
+    }
+  });
   if (typeof ResizeObserver !== "undefined") {
     const observer = new ResizeObserver(function () {
       const width = root.parentElement ? root.parentElement.clientWidth : 0;
@@ -355,6 +551,27 @@ select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;borde
     window.addEventListener("beforeunload", function () { observer.disconnect(); });
   }
   window.addEventListener("resize", function () { setTimeout(refreshLayout, 200); });
+  function setEditorLocked(locked) {
+    const ids = ["file","demo","xmlDemo","mutopiaSelect","mutopiaOpen",
+      "startBar","endBar","applySection","referenceTrack","speed"];
+    for(const id of ids){
+      const element=document.getElementById(id);
+      if(!element)continue;
+      element.disabled=locked || (id==="referenceTrack" && (activeScore?.tracks?.length||0)<=1);
+    }
+    for(const button of libraryList.querySelectorAll("button")) button.disabled=locked;
+    sectionHint.textContent=locked
+      ? "Buổi tập đang chạy: cố định đoạn, track và BPM cho đến khi lưu session."
+      : activeReference
+        ? "Ô " + activeReference.startBar + "–" + activeReference.endBar +
+          " · " + activeReference.durationSeconds.toFixed(1) + " giây"
+        : "Chọn ô đầu–cuối và bấm Áp dụng đoạn.";
+  }
+  window.addEventListener("message",function(event){
+    if(event.source!==window.parent || event.origin!==location.origin)return;
+    if(event.data?.source==="gc-practice" && event.data.type==="lock-controls")
+      setEditorLocked(event.data.locked===true);
+  });
   window.addEventListener("beforeunload",function(){if(api)api.destroy();});
 })();
 </script>

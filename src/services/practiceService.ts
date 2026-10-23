@@ -35,6 +35,10 @@ export interface PracticeSession {
   exerciseId?:
     string | null;
 
+  startBar?: number | null;
+  endBar?: number | null;
+  trackIndex?: number | null;
+
   title: string;
 
   durationSeconds: number;
@@ -94,6 +98,9 @@ interface CreatePracticeSessionInput {
   sourceId?: string;
 
   exerciseId?: string;
+  startBar?: number;
+  endBar?: number;
+  trackIndex?: number;
 
   title: string;
 
@@ -144,6 +151,10 @@ export async function createPracticeSession(
         exerciseId:
           input.exerciseId ??
           null,
+
+        startBar: input.startBar ?? null,
+        endBar: input.endBar ?? null,
+        trackIndex: input.trackIndex ?? null,
 
         title:
           input.title.trim(),
@@ -508,11 +519,11 @@ export async function updatePracticeSession(
 // ======================================
 
 export interface PracticeAnalysisUpdate {
-  overallScore: number;
+  overallScore: number | null;
 
-  noteAccuracy: number;
+  noteAccuracy: number | null;
 
-  timingScore: number;
+  timingScore: number | null;
 
   audioId: string;
 

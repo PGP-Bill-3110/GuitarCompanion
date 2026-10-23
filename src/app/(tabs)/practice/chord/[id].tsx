@@ -278,6 +278,25 @@ export default function ChordSongScreen() {
           />
         </View>
 
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Mở thư viện sơ đồ hợp âm"
+          style={{
+            flexDirection: "row", alignItems: "center", gap: 10,
+            borderWidth: 1, borderColor: colors.borderAccent,
+            backgroundColor: colors.surfaceRaised, padding: 13,
+            borderRadius: 13, marginVertical: 12,
+          }}
+          onPress={() => router.push("/practice/chord-library" as any)}
+        >
+          <Ionicons name="musical-notes-outline" size={23} color={colors.accent}/>
+          <View style={{flex:1}}>
+            <Text style={{color:colors.text,fontWeight:"800"}}>Tra cứu sơ đồ hợp âm</Text>
+            <Text style={{color:colors.textSoft,fontSize:12,marginTop:3}}>Xem thế bấm, ngón tay và nghe từng hợp âm trong bài</Text>
+          </View>
+          <Ionicons name="arrow-forward" color={colors.accent} size={18}/>
+        </TouchableOpacity>
+
         <PracticeSessionBar
           sourceType="chord"
           sourceId={song.id}

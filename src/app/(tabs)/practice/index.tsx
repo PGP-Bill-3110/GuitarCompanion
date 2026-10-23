@@ -79,6 +79,24 @@ export default function PracticeScreen() {
           <Ionicons name="arrow-forward-circle" size={28} color={colors.accent} />
         </TouchableOpacity>
 
+        {/* CHORD LIBRARY */}
+        <TouchableOpacity
+          style={styles.learningCard}
+          onPress={() => router.push("/practice/chord-library" as any)}
+          accessibilityRole="button"
+          accessibilityLabel="Mở thư viện sơ đồ hợp âm"
+        >
+          <View style={styles.learningIcon}>
+            <Ionicons name="musical-notes-outline" size={25} color={colors.accent} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.learningEyebrow}>CHORDS & FINGERING</Text>
+            <Text style={styles.learningTitle}>Interactive Chord Library</Text>
+            <Text style={styles.learningHint}>529 hợp âm · 2.069 thế bấm · Sơ đồ và nghe âm mẫu</Text>
+          </View>
+          <Ionicons name="arrow-forward-circle" size={28} color={colors.accent} />
+        </TouchableOpacity>
+
         {/* PRACTICE HISTORY */}
 
         <TouchableOpacity

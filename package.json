@@ -6,6 +6,7 @@
     "@coderline/alphatab": "^1.8.4",
     "@expo/ui": "~57.0.20",
     "@expo/vector-icons": "^15.0.2",
+    "@tombatossals/chords-db": "^0.5.1",
     "expo": "~57.0.26",
     "expo-audio": "~57.0.5",
     "expo-constants": "~57.0.20",

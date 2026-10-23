@@ -34,10 +34,12 @@ interface Props {
   onRecordingReady?: (
     result: RecordingResult
   ) => void;
+  onRecordingCleared?: () => void;
 }
 
 export default function AudioRecorder({
   onRecordingReady,
+  onRecordingCleared,
 }: Props) {
   // =====================================
   // RECORDER
@@ -198,6 +200,7 @@ export default function AudioRecorder({
       setRecordedDuration(
         0
       );
+      onRecordingCleared?.();
 
       await recorder
         .prepareToRecordAsync();
@@ -367,6 +370,7 @@ export default function AudioRecorder({
     setRecordedDuration(
       0
     );
+    onRecordingCleared?.();
 
     setMessage("");
   }

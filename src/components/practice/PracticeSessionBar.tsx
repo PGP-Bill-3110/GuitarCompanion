@@ -1,6 +1,7 @@
 import { colors } from "../../theme/colors";
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -39,6 +40,10 @@ interface Props {
   title: string;
 
   bpm?: number;
+  startBar?: number;
+  endBar?: number;
+  trackIndex?: number;
+  onPracticeStateChange?: (active: boolean) => void;
 }
 
 export default function PracticeSessionBar({
@@ -47,6 +52,10 @@ export default function PracticeSessionBar({
   analysisExerciseId,
   title,
   bpm,
+  startBar,
+  endBar,
+  trackIndex,
+  onPracticeStateChange,
 }: Props) {
   const {
     user,
@@ -83,6 +92,12 @@ export default function PracticeSessionBar({
       string | null
     >(null);
 
+  // Freeze score metadata at session start, so switching scores cannot
+  // accidentally save a session under the wrong title/reference.
+  const activeMetadata = useRef({
+    sourceType, sourceId, analysisExerciseId, title, bpm, startBar, endBar, trackIndex,
+  });
+
   const practicing =
     startedAt !== null;
 
@@ -118,11 +133,15 @@ export default function PracticeSessionBar({
       return;
     }
 
+    activeMetadata.current = {
+      sourceType, sourceId, analysisExerciseId, title, bpm, startBar, endBar, trackIndex,
+    };
     setElapsedSeconds(0);
 
     setStartedAt(
       Date.now()
     );
+    onPracticeStateChange?.(true);
 
     setLastSessionId(null);
     setMessage("");
@@ -155,19 +174,21 @@ export default function PracticeSessionBar({
         await createPracticeSession(
           user.uid,
           {
-            sourceType,
+            sourceType: activeMetadata.current.sourceType,
 
-            sourceId,
+            sourceId: activeMetadata.current.sourceId,
 
-            exerciseId:
-              analysisExerciseId,
+            exerciseId: activeMetadata.current.analysisExerciseId,
 
-            title,
+            title: activeMetadata.current.title,
 
             durationSeconds:
               seconds,
 
-            bpm,
+            bpm: activeMetadata.current.bpm,
+            startBar: activeMetadata.current.startBar,
+            endBar: activeMetadata.current.endBar,
+            trackIndex: activeMetadata.current.trackIndex,
           }
         );
 
@@ -176,6 +197,7 @@ export default function PracticeSessionBar({
       );
 
       setStartedAt(null);
+      onPracticeStateChange?.(false);
 
       setElapsedSeconds(
         0

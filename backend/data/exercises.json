@@ -38,7 +38,6 @@
       }
     ]
   },
-
   {
     "id": "c-major-scale",
     "title": "C Major Scale",
@@ -106,7 +105,6 @@
       }
     ]
   },
-
   {
     "id": "chord-progression-01",
     "title": "G - D - Em - C",
@@ -139,6 +137,498 @@
         "chord": "C",
         "startBeat": 12,
         "durationBeats": 4
+      }
+    ]
+  },
+  {
+    "id": "gc-tab-open-strings",
+    "title": "Six Open Strings",
+    "description": "GuitarCompanion 16-beat original monophonic guitar tab; use the displayed tempo and play notes once, without the backing player.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 65,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "E2",
+        "midi": 40,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "A2",
+        "midi": 45,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D3",
+        "midi": 50,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 3,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "B3",
+        "midi": 59,
+        "startBeat": 4,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 5,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "B3",
+        "midi": 59,
+        "startBeat": 6,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 7,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D3",
+        "midi": 50,
+        "startBeat": 8,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "A2",
+        "midi": 45,
+        "startBeat": 9,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E2",
+        "midi": 40,
+        "startBeat": 10,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "A2",
+        "midi": 45,
+        "startBeat": 11,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D3",
+        "midi": 50,
+        "startBeat": 12,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 13,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "B3",
+        "midi": 59,
+        "startBeat": 14,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 15,
+        "durationBeats": 1
+      }
+    ]
+  },
+  {
+    "id": "gc-tab-high-e-melody",
+    "title": "First Melody on E",
+    "description": "GuitarCompanion 16-beat original monophonic guitar tab; use the displayed tempo and play notes once, without the backing player.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 72,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 3,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 4,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 5,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 6,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 7,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 8,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 9,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 10,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 11,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 12,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 13,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 14,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 15,
+        "durationBeats": 1
+      }
+    ]
+  },
+  {
+    "id": "gc-tab-two-string-walk",
+    "title": "Two-String Walk",
+    "description": "GuitarCompanion 16-beat original monophonic guitar tab; use the displayed tempo and play notes once, without the backing player.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 76,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 3,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G4",
+        "midi": 67,
+        "startBeat": 4,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 5,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 6,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 7,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 8,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 9,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 10,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "F4",
+        "midi": 65,
+        "startBeat": 11,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 12,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "D4",
+        "midi": 62,
+        "startBeat": 13,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 14,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 15,
+        "durationBeats": 1
+      }
+    ]
+  },
+  {
+    "id": "gc-tab-c-arpeggio",
+    "title": "C Major Arpeggio",
+    "description": "GuitarCompanion 16-beat original monophonic guitar tab; use the displayed tempo and play notes once, without the backing player.",
+    "difficulty": "beginner",
+    "analysisMode": "single_notes",
+    "bpm": 66,
+    "beatsPerMeasure": 4,
+    "events": [
+      {
+        "type": "note",
+        "note": "C3",
+        "midi": 48,
+        "startBeat": 0,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E3",
+        "midi": 52,
+        "startBeat": 1,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 2,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 3,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 4,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 5,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 6,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E3",
+        "midi": 52,
+        "startBeat": 7,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C3",
+        "midi": 48,
+        "startBeat": 8,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 9,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 10,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E4",
+        "midi": 64,
+        "startBeat": 11,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C4",
+        "midi": 60,
+        "startBeat": 12,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "G3",
+        "midi": 55,
+        "startBeat": 13,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "E3",
+        "midi": 52,
+        "startBeat": 14,
+        "durationBeats": 1
+      },
+      {
+        "type": "note",
+        "note": "C3",
+        "midi": 48,
+        "startBeat": 15,
+        "durationBeats": 1
       }
     ]
   }

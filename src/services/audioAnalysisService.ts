@@ -54,6 +54,9 @@ export interface AudioAnalysisResult {
   analysis:
     PracticeAnalysis | null;
 
+  noteCount?: number;
+  detectedNotes?: DetectedNote[];
+
   feedback?: string[];
 }
 
@@ -64,7 +67,9 @@ const API_URL =
 
 export async function uploadPracticeAudio(
   uri: string,
-  exerciseId?: string
+  exerciseId?: string,
+  practiceBpm?: number,
+  referenceJson?: string
 ): Promise<AudioAnalysisResult> {
   // Đọc file recording local/blob
   const audioResponse =
@@ -132,10 +137,12 @@ export async function uploadPracticeAudio(
   );
 
   if (exerciseId) {
-    formData.append(
-      "exerciseId",
-      exerciseId
-    );
+    formData.append("exerciseId", exerciseId);
+  } else if (referenceJson) {
+    formData.append("scoreJson", referenceJson);
+  }
+  if (practiceBpm != null && Number.isFinite(practiceBpm) && (exerciseId || referenceJson)) {
+    formData.append("bpm", String(practiceBpm));
   }
 
   // Upload FastAPI
