@@ -32,6 +32,8 @@ export interface Song {
 
   // Dùng cho sheet / tablature dạng PDF
   pdfUrl?: string;
+  // MusicXML practice edition, if available and reviewed against source MIDI.
+  musicXmlUrl?: string;
 
   description?: string;
 }
@@ -251,6 +253,37 @@ export const songs: Song[] = [
     pdfUrl: "/scores/thap-roi-tu-do.pdf",
 
     description: "Guitar score / tablature",
+  },
+
+  {
+    id: "mutopia-carcassi-etude-1",
+    title: "Carcassi – Etude 1, Op. 60",
+    artist: "Matteo Carcassi · Mutopia Project",
+    type: "score",
+    difficulty: "Intermediate",
+    pdfUrl: "/mutopia/carcassi-op60-01-a4.pdf",
+    musicXmlUrl: "/mutopia/carcassi-op60-01.musicxml",
+    description: "Public Domain · Mutopia Project · Guitar classical study",
+  },
+  {
+    id: "mutopia-carcassi-etude-3",
+    title: "Carcassi – Etude 3, Op. 60",
+    artist: "Matteo Carcassi · Mutopia Project",
+    type: "score",
+    difficulty: "Intermediate",
+    pdfUrl: "/mutopia/carcassi-op60-03-a4.pdf",
+    musicXmlUrl: "/mutopia/carcassi-op60-03.musicxml",
+    description: "Public Domain · Mutopia Project · Guitar classical study",
+  },
+  {
+    id: "mutopia-carcassi-etude-8",
+    title: "Carcassi – Etude 8, Op. 60",
+    artist: "Matteo Carcassi · Mutopia Project",
+    type: "score",
+    difficulty: "Intermediate",
+    pdfUrl: "/mutopia/carcassi-op60-08-a4.pdf",
+    musicXmlUrl: "/mutopia/carcassi-op60-08.musicxml",
+    description: "Public Domain · Mutopia Project · Guitar classical study",
   },
 ];
 

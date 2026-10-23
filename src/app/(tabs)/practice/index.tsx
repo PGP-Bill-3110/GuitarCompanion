@@ -193,6 +193,25 @@ export default function PracticeScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* ALPHATAB IMPORT */}
+        {(activeTab === "tabs" || activeTab === "scores") && (
+          <TouchableOpacity
+            style={styles.studioBanner}
+            accessibilityRole="button"
+            accessibilityLabel="Mở alphaTab Studio để nhập MusicXML hoặc Guitar Pro"
+            onPress={() => router.push("/practice/score-studio" as any)}
+          >
+            <View style={styles.studioIcon}>
+              <Ionicons name="cloud-upload-outline" size={26} color={colors.accent}/>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.studioTitle}>alphaTab · Import MusicXML / Guitar Pro</Text>
+              <Text style={styles.studioDesc}>Mở file .musicxml, .mxl, .gp, .gpx, .gp3–5 ngay trong trình duyệt</Text>
+            </View>
+            <Ionicons name="arrow-forward-circle" color={colors.accent} size={25}/>
+          </TouchableOpacity>
+        )}
+
         {/* SEARCH */}
 
         <View style={styles.searchBox}>
@@ -447,6 +466,28 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 4,
   },
+
+  studioBanner: {
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.borderAccent,
+    borderWidth: 1,
+    padding: 16,
+    borderRadius: 18,
+    marginTop: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  studioIcon: {
+    width: 48,
+    height: 48,
+    backgroundColor: colors.accentSoft,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  studioTitle: { color: colors.text, fontSize: 15, fontWeight: "800" },
+  studioDesc: { color: colors.textSoft, marginTop: 5, fontSize: 11, lineHeight: 18 },
 
   tabIntro: {
     flexDirection: "row",

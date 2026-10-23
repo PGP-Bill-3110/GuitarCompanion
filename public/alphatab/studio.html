@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>GuitarCompanion · alphaTab Studio</title>
+<style>
+:root{color-scheme:dark;--card:#161827;--edge:#544569;--purple:#c7a8ea;--text:#f8f5fb;--muted:#c4bbd4}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:transparent;color:var(--text)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#151726;border:1px solid #695b7a}
+.btn{background:#675086;border:1px solid #8f77af;border-radius:10px;color:white;font-weight:700;padding:11px 13px;cursor:pointer;font-size:13px}
+.btn:hover{filter:brightness(1.15)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.secondary{background:#28263a;border-color:#635678}
+label.pick{display:inline-flex;align-items:center;gap:8px}
+input[type=file]{max-width:215px;font-size:12px;color:var(--muted)}
+select{background:#272439;border:1px solid #615176;color:#fff;padding:10px;border-radius:8px}
+.status{font-size:12px;color:#c2bad1;margin:9px 0;min-height:20px;white-space:normal}
+.status.error{color:#fda4af}
+#scoreShell{overflow:auto;max-height:670px;background:#fff;color:#151515;border-radius:14px;border:1px solid #716188;padding:10px 0;min-height:260px}
+#score{width:100%;min-width:560px}
+.details{font-size:12px;color:#cabbdc;margin:8px 0}
+.caption{font-size:11px;color:#b8aeca;margin-top:7px}
+#progress{font-size:12px;color:var(--purple);min-width:50px}
+.library{margin-top:12px;background:#151727;border:1px solid #615376;border-radius:14px;padding:12px 14px}
+.library h2{font-size:14px;margin:0;color:#f8f5fb}
+.library small{display:block;color:#bfb4cd;margin-top:2px}
+.library-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.library-item{display:flex;align-items:center;gap:8px;background:#252337;border:1px solid #665379;border-radius:10px;padding:7px 9px;max-width:100%;flex:1 1 240px}
+.library-meta{flex:1;min-width:0}
+.library-name{color:#eee4fc;display:block;font-weight:700;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.library-sub{color:#aaa1bc;font-size:11px}
+.library .btn{padding:7px 10px;font-size:12px}
+.library-delete{background:#392633;border:1px solid #744956;border-radius:9px;color:#ffdbe1;cursor:pointer;padding:7px 9px}
+.library-empty{color:#aaa1bc;font-size:12px;padding:6px 0}
+.library-status{color:#c7a8ea;font-size:11px;margin-left:10px}
+</style>
+</head>
+<body>
+<div class="toolbar">
+<label class="pick"><strong>Nhập file</strong><input id="file" type="file" accept=".musicxml,.xml,.mxl,.gp,.gpx,.gp3,.gp4,.gp5,.capx,.cap,.txt,.tex"/></label>
+<button type="button" class="btn secondary" id="demo">Mở tab mẫu</button>
+<button type="button" class="btn secondary" id="xmlDemo">MusicXML mẫu</button>
+<label>Bản Mutopia
+  <select id="mutopiaSelect">
+    <option value="01">Carcassi Etude 1</option>
+    <option value="03">Carcassi Etude 3</option>
+    <option value="08">Carcassi Etude 8</option>
+  </select>
+</label>
+<button type="button" class="btn secondary" id="mutopiaOpen">Mở Mutopia</button>
+<button type="button" class="btn" id="play" disabled>▶ Play</button>
+<button type="button" class="btn secondary" id="stop" disabled>■ Stop</button>
+<span id="progress">0:00</span>
+<label>Tempo <select id="speed"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.25">125%</option><option value="1.5">150%</option></select></label>
+</div>
+<section class="library" aria-label="Thư viện bản nhạc đã lưu">
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <div style="flex:1"><h2>Thư viện của tôi (IndexedDB)</h2><small>Nhập file hợp lệ để tự lưu trên trình duyệt này; mở lại sau khi F5.</small></div>
+    <button type="button" class="btn secondary" id="libraryRefresh">Tải lại danh sách</button>
+  </div>
+  <div id="libraryList" class="library-list"><div class="library-empty">Đang tải thư viện cục bộ...</div></div>
+  <span class="library-status" id="libraryStatus"></span>
+</section>
+<div class="status" id="status">Đang khởi tạo trình đọc bản nhạc...</div>
+<div id="scoreShell"><div id="score"></div></div>
+<p class="details" id="details">Các file nhập được lưu cục bộ bằng IndexedDB. Không gửi lên Firebase hay FastAPI.</p>
+<p class="caption">Hỗ trợ MusicXML (.musicxml, .xml, .mxl), Guitar Pro (.gp3–5, .gpx, .gp), và alphaTex (.tex/.txt). Không hỗ trợ chuyển PDF hoặc MIDI thành Guitar Pro tự động.</p>
+<script src="/alphatab/alphaTab.min.js"></script>
+<script src="/alphatab/score-library.js"></script>
+<script>
+(function () {
+  "use strict";
+  const root = document.getElementById("score");
+  const status = document.getElementById("status");
+  const info = document.getElementById("details");
+  const fileInput = document.getElementById("file");
+  const play = document.getElementById("play");
+  const stop = document.getElementById("stop");
+  const speed = document.getElementById("speed");
+  const displayTime = document.getElementById("progress");
+  let api = null;
+  let demoScores = [];
+  let currentDemo = new URLSearchParams(location.search).get("demo") || "open-strings";
+  let isPlaying = false;
+  let loaded = false;
+  let lastWidth = 0;
+  let pendingImport = null;
+  const store = window.GuitarCompanionScoreDB;
+  const libraryList = document.getElementById("libraryList");
+  const libraryStatus = document.getElementById("libraryStatus");
+  function setLibraryMessage(msg, isError) {
+    libraryStatus.textContent = msg;
+    libraryStatus.style.color = isError ? "#fda4af" : "#c7a8ea";
+  }
+  async function refreshLibrary() {
+    if (!store) { setLibraryMessage("IndexedDB chưa sẵn sàng.", true); return; }
+    try {
+      const items = await store.list();
+      libraryList.replaceChildren();
+      if (!items.length) {
+        const empty = document.createElement("div");
+        empty.className = "library-empty";
+        empty.textContent = "Chưa có file cá nhân. Hãy nhập MusicXML hoặc Guitar Pro để lưu.";
+        libraryList.appendChild(empty);
+      }
+      for (const item of items) {
+        const row = document.createElement("div");
+        row.className = "library-item";
+        const meta = document.createElement("div");
+        meta.className = "library-meta";
+        const title = document.createElement("span");
+        title.className = "library-name";
+        title.textContent = item.title || item.name;
+        title.title = item.name;
+        const sub = document.createElement("span");
+        sub.className = "library-sub";
+        sub.textContent = item.format.toUpperCase() + " · " + Math.ceil(item.size/1024) + " KB · " + new Date(item.savedAt).toLocaleDateString("vi-VN");
+        meta.append(title,sub);
+        const openBtn = document.createElement("button");
+        openBtn.type = "button";
+        openBtn.className = "btn secondary";
+        openBtn.textContent = "Mở";
+        openBtn.addEventListener("click", function () { void openLibraryItem(item.id); });
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "library-delete";
+        deleteBtn.textContent = "Xóa";
+        deleteBtn.setAttribute("aria-label","Xóa file " + item.name);
+        deleteBtn.addEventListener("click", function () { void deleteLibraryItem(item.id); });
+        row.append(meta, openBtn, deleteBtn);
+        libraryList.appendChild(row);
+      }
+      setLibraryMessage(items.length + " bản nhạc đang lưu trong trình duyệt");
+    } catch (err) {
+      libraryList.replaceChildren();
+      setLibraryMessage("Không đọc được IndexedDB: " + String(err.message || err), true);
+    }
+  }
+  async function openLibraryItem(id) {
+    if (!api || !store) return;
+    try {
+      const record = await store.get(id);
+      if (!record) { await refreshLibrary(); throw new Error("File không còn trong thư viện."); }
+      pendingImport = null;
+      api.stop();
+      loaded = false;
+      setPlaybackControls();
+      message("Đang mở file: " + record.name);
+      if (record.format === "txt" || record.format === "tex") {
+        api.load(alphaTab.importer.ScoreLoader.loadAlphaTex(new TextDecoder().decode(record.bytes)));
+      } else if (!api.load(new Uint8Array(record.bytes))) {
+        throw new Error("Không thể đọc dữ liệu bản nhạc.");
+      }
+      info.textContent = "Thư viện cục bộ: " + record.name;
+    } catch (err) {
+      console.error("Saved score open error",err);
+      message("Không mở được bản nhạc đã lưu: " + String(err.message || err), true);
+    }
+  }
+  async function deleteLibraryItem(id) {
+    if (!store || !window.confirm("Xóa file này khỏi thư viện cục bộ?")) return;
+    try {
+      await store.remove(id);
+      await refreshLibrary();
+    } catch(err) {setLibraryMessage("Không xóa được file: " + String(err.message || err), true);}
+  }
+  async function commitPendingImport(score) {
+    const pending = pendingImport;
+    pendingImport = null;
+    if (!pending || !store) return;
+    try {
+      await store.save({name:pending.name,bytes:pending.bytes,title:score.title || pending.name});
+      await refreshLibrary();
+      setLibraryMessage("Đã lưu " + pending.name + " vào IndexedDB");
+    } catch(err) {
+      setLibraryMessage("Bản nhạc mở được nhưng chưa lưu: " + String(err.message || err), true);
+    }
+  }
+  document.getElementById("libraryRefresh").addEventListener("click",function () {void refreshLibrary();});
+  void refreshLibrary();
+
+  function refreshLayout() {
+    if (!api || !loaded) return;
+    const width = root.parentElement ? root.parentElement.clientWidth : 0;
+    if (width > 100) {
+      try { api.render(); } catch (error) { console.warn("alphaTab redraw", error); }
+    }
+  }
+  function message(text, error) {
+    status.textContent = text;
+    status.className = "status" + (error ? " error" : "");
+    window.parent.postMessage({source:"gc-alphatab",type:error?"error":"status",text},location.origin);
+  }
+  function setPlaybackControls() {
+    play.disabled = !loaded;
+    stop.disabled = !loaded;
+    play.textContent = isPlaying ? "Ⅱ Pause" : "▶ Play";
+  }
+  function clock(ms) {
+    const sec = Math.max(0, Math.floor(ms / 1000));
+    return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2,"0");
+  }
+  try {
+    if (!window.alphaTab) throw new Error("alphaTab script not found");
+    api = new alphaTab.AlphaTabApi(root, {
+      core: {
+        scriptFile: location.origin + "/alphatab/alphaTab.min.js",
+        fontDirectory: location.origin + "/alphatab/font/",
+        useWorkers: false
+      },
+      display: { layoutMode: 0, scale: 0.8 },
+      player: {
+        enablePlayer: true,
+        soundFont: "/alphatab/soundfont/sonivox.sf2",
+        scrollElement: document.getElementById("scoreShell")
+      }
+    });
+    api.scoreLoaded.on(function (score) {
+      loaded = true;
+      void commitPendingImport(score);
+      isPlaying = false;
+      setPlaybackControls();
+      info.textContent = (score.title || "Bản nhạc") + " · " +
+        (score.artist || score.composer || "Không rõ tác giả") + " · " + score.tracks.length + " track";
+      message("Bản nhạc đã tải. Có thể chọn nốt, phát và đổi tốc độ.");
+      // Expo Web iframe may start with a zero-width render target.
+      setTimeout(refreshLayout, 350);
+      setTimeout(refreshLayout, 1200);
+    });
+    api.error.on(function (error) {
+      pendingImport = null;
+      console.error("alphaTab error", error);
+      loaded = false;
+      isPlaying = false;
+      setPlaybackControls();
+      message("Không thể đọc bản nhạc. File có thể không hợp lệ hoặc chưa được alphaTab hỗ trợ.", true);
+    });
+    api.playerStateChanged.on(function (evt) {
+      // State=1 (Playing), 0 (Paused), 2 (Stopped)
+      isPlaying = evt.state === 1;
+      setPlaybackControls();
+    });
+    api.playerPositionChanged.on(function (evt) {
+      displayTime.textContent = clock(evt.currentTime || 0);
+    });
+    message("alphaTab sẵn sàng. Chọn file MusicXML/Guitar Pro hoặc dùng tab mẫu.");
+  } catch (err) {
+    console.error(err);
+    message("Không thể khởi tạo alphaTab: " + String(err.message || err), true);
+  }
+  function showDemo(id) {
+    if (!api) return;
+    pendingImport = null;
+    const selected = demoScores.find(function (item) { return item.id === id; }) || demoScores[0];
+    if (!selected) {
+      message("Không đọc được danh sách bài tab mẫu.",true);
+      return;
+    }
+    try {
+      api.stop();
+      loaded = false;
+      setPlaybackControls();
+      message("Đang tải tab mẫu: " + selected.title);
+      const score = alphaTab.importer.ScoreLoader.loadAlphaTex(selected.tex);
+      api.load(score);
+      info.textContent = "Bài mẫu nguyên bản · GuitarCompanion · " + selected.title;
+    } catch (err) {
+      console.error("Demo load error",err);
+      message("Tab mẫu không hợp lệ: " + String(err.message || err),true);
+    }
+  }
+  function openMutopia(no) {
+    if (!api || !["01","03","08"].includes(no)) return;
+    pendingImport = null;
+    api.stop();
+    loaded = false;
+    setPlaybackControls();
+    message("Đang mở Etude " + parseInt(no, 10) + " từ Mutopia...");
+    document.getElementById("mutopiaSelect").value = no;
+    const url = "/mutopia/carcassi-op60-" + no + ".musicxml";
+    if (!api.load(url)) message("Không thể mở MusicXML Mutopia.", true);
+  }
+  document.getElementById("mutopiaOpen").addEventListener("click", function () {
+    openMutopia(document.getElementById("mutopiaSelect").value);
+  });
+
+  fetch("/alphatab/demo-scores.json").then(function (r) {
+    if(!r.ok)throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(function(data) {
+    demoScores = data;
+    const params = new URLSearchParams(location.search);
+    if (["01","03","08"].includes(params.get("mutopia"))) {
+      openMutopia(params.get("mutopia"));
+    } else if (params.get("sample") === "musicxml") {
+      document.getElementById("xmlDemo").click();
+    } else {
+      showDemo(currentDemo);
+    }
+  }).catch(function(err) { message("Không tải được tab mẫu: "+err.message,true); });
+
+  document.getElementById("demo").addEventListener("click",function(){showDemo(currentDemo);});
+  document.getElementById("xmlDemo").addEventListener("click",function(){
+    if (!api) return;
+    pendingImport = null;
+    api.stop();
+    loaded = false;
+    setPlaybackControls();
+    message("Đang tải MusicXML mẫu...");
+    if (!api.load("/alphatab/demo-melody.musicxml")) {
+      message("Không thể tải MusicXML mẫu.", true);
+    }
+  });
+  fileInput.addEventListener("change", async function () {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file || !api) return;
+    const extension = (file.name.split(".").pop() || "").toLowerCase();
+    const accepted = ["musicxml","xml","mxl","gp","gpx","gp3","gp4","gp5","capx","cap","txt","tex"];
+    if (!accepted.includes(extension)) {message("Định dạng file chưa được hỗ trợ.",true); return;}
+    if (file.size > 15 * 1024 * 1024) {message("File quá lớn (tối đa 15 MB).",true);return;}
+    try {
+      api.stop();
+      loaded = false;
+      setPlaybackControls();
+      message("Đang nhập file " + file.name + "...");
+      const buffer = await file.arrayBuffer();
+      pendingImport = {name:file.name,bytes:buffer};
+      if (extension === "tex" || extension === "txt") {
+        const score = alphaTab.importer.ScoreLoader.loadAlphaTex(new TextDecoder().decode(buffer));
+        api.load(score);
+      } else {
+        if (!api.load(new Uint8Array(buffer))) throw new Error("Không thể bắt đầu đọc file.");
+      }
+      info.textContent = "File nhập: " + file.name + " (sẽ lưu vào IndexedDB nếu đọc thành công)";
+    } catch (error) {
+      pendingImport = null;
+      console.error("Import error", error);
+      message("Không đọc được file " + file.name + ": " + (error.message || error),true);
+    } finally { fileInput.value = ""; }
+  });
+  play.addEventListener("click",function () {if (api && loaded) api.playPause();});
+  stop.addEventListener("click",function () {if (api) {api.stop();displayTime.textContent="0:00";isPlaying=false;setPlaybackControls();}});
+  speed.addEventListener("change",function () {if(api)api.playbackSpeed=Number(speed.value);});
+  if (typeof ResizeObserver !== "undefined") {
+    const observer = new ResizeObserver(function () {
+      const width = root.parentElement ? root.parentElement.clientWidth : 0;
+      if (width > 100 && Math.abs(lastWidth - width) > 1) {
+        lastWidth = width;
+        setTimeout(refreshLayout, 100);
+      }
+    });
+    if (root.parentElement) observer.observe(root.parentElement);
+    window.addEventListener("beforeunload", function () { observer.disconnect(); });
+  }
+  window.addEventListener("resize", function () { setTimeout(refreshLayout, 200); });
+  window.addEventListener("beforeunload",function(){if(api)api.destroy();});
+})();
+</script>
+</body>
+</html>

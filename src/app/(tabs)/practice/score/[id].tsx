@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -122,6 +123,25 @@ export default function ScoreScreen() {
         title={song.title}
         bpm={song.bpm}
       />
+
+      {/* INTERACTIVE MUTOPIA PRACTICE EDITION */}
+      {Platform.OS === "web" && song.musicXmlUrl && (
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={styles.interactiveButton}
+          onPress={() => router.push(
+            ("/practice/score-studio?mutopia=" +
+              (song.musicXmlUrl?.match(/carcassi-op60-(\d{2})\.musicxml$/)?.[1] || "")) as any
+          )}
+        >
+          <Ionicons name="musical-notes-outline" size={19} color={colors.accent} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.interactiveTitle}>Luyện tập tương tác với alphaTab</Text>
+            <Text style={styles.interactiveDesc}>MusicXML từ MIDI Mutopia · phát nhạc · thay tốc độ</Text>
+          </View>
+          <Ionicons name="arrow-forward" size={18} color={colors.accent} />
+        </TouchableOpacity>
+      )}
 
       {/* VIEWER */}
 
@@ -251,6 +271,21 @@ const styles =
       fontWeight: "600",
     },
 
+    interactiveButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      backgroundColor: colors.surfaceRaised,
+      borderWidth: 1,
+      borderColor: colors.borderAccent,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginHorizontal: 18,
+      marginBottom: 8,
+    },
+    interactiveTitle: { color: colors.text, fontWeight: "800", fontSize: 14 },
+    interactiveDesc: { color: colors.textSoft, fontSize: 11, marginTop: 3 },
     viewer: {
       flex: 1,
 

@@ -115,6 +115,17 @@ export default function GuitarTabDetail() {
           <View style={styles.pill}><Ionicons name="school-outline" color={colors.accent} size={14}/><Text style={styles.pillText}>{tab.difficulty}</Text></View>
         </View>
 
+        {Platform.OS === "web" && (
+          <TouchableOpacity
+            style={styles.alphaButton}
+            onPress={() => router.push(("/practice/score-studio?demo=" + tab.id) as any)}
+          >
+            <Ionicons name="musical-notes-outline" color={colors.accent} size={21}/>
+            <Text style={styles.alphaButtonLabel}>Xem bằng alphaTab · Khuông nhạc & playback</Text>
+            <Ionicons name="arrow-forward" color={colors.accent} size={17}/>
+          </TouchableOpacity>
+        )}
+
         <View style={styles.card}>
           <View style={styles.sectionHead}>
             <Ionicons name="list-outline" color={colors.accent} size={21}/>
@@ -213,6 +224,8 @@ export default function GuitarTabDetail() {
 
 const styles = StyleSheet.create({
   screen: {flex:1, backgroundColor:colors.gradientEnd},
+  alphaButton: {backgroundColor:colors.surfaceRaised,borderColor:colors.borderAccent,borderWidth:1,padding:14,borderRadius:14,marginTop:12,flexDirection:"row",alignItems:"center",gap:9},
+  alphaButtonLabel: {flex:1,color:colors.accent,fontWeight:"800",fontSize:12},
   container: {width:"100%", maxWidth:1060, alignSelf:"center", padding:22, paddingTop:28, paddingBottom:100},
   back: {flexDirection:"row", alignItems:"center", gap:10, alignSelf:"flex-start", marginBottom:20},
   eyebrow: {fontSize:11, fontWeight:"800", letterSpacing:1.5, color:colors.accent, marginBottom:6},

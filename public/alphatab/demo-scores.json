@@ -1,0 +1,22 @@
+[
+  {
+    "id": "open-strings",
+    "title": "Six Open Strings",
+    "tex": "\\title \"Six Open Strings\" \\artist \"GuitarCompanion\" \\tempo 65 . :4 0.6 0.5 0.4 0.3 | 0.2 0.1 0.2 0.3 | 0.4 0.5 0.6 0.5 | 0.4 0.3 0.2 0.1"
+  },
+  {
+    "id": "high-e-melody",
+    "title": "First Melody on E",
+    "tex": "\\title \"First Melody on E\" \\artist \"GuitarCompanion\" \\tempo 72 . :4 0.1 1.1 3.1 1.1 | 0.1 3.1 1.1 0.1 | 3.1 3.1 1.1 0.1 | 1.1 3.1 1.1 0.1"
+  },
+  {
+    "id": "two-string-walk",
+    "title": "Two-String Walk",
+    "tex": "\\title \"Two-String Walk\" \\artist \"GuitarCompanion\" \\tempo 76 . :4 1.2 3.2 0.1 1.1 | 3.1 1.1 0.1 3.2 | 1.2 0.1 3.2 1.1 | 0.1 3.2 1.2 1.2"
+  },
+  {
+    "id": "c-arpeggio",
+    "title": "C Major Arpeggio",
+    "tex": "\\title \"C Major Arpeggio\" \\artist \"GuitarCompanion\" \\tempo 66 . :4 3.5 2.4 0.3 1.2 | 0.1 1.2 0.3 2.4 | 3.5 0.3 1.2 0.1 | 1.2 0.3 2.4 3.5"
+  }
+]
