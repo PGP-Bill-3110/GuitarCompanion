@@ -27,6 +27,15 @@ export default function LessonDetailScreen() {
   const next = learningLessons[index + 1];
   const previous = learningLessons[index - 1];
   const module = learningModules.find((item) => item.id === lesson?.moduleId);
+  const relatedRhythmId: string | undefined = ({
+    "count-four": "four-down",
+    "eighth-notes": "four-eighths",
+    "strumming-pattern": "four-pop",
+    "song-progression": "four-pop",
+    "smooth-transitions": "four-down",
+    "first-performance": "four-pop",
+  } as Record<string, string>)[id || ""];
+
   const relatedChordNames: string[] | undefined = ({
     "chord-em-am": ["Em", "Am"],
     "chord-c-g": ["C", "G"],
@@ -167,6 +176,29 @@ export default function LessonDetailScreen() {
           </TouchableOpacity>
         )}
 
+        {relatedRhythmId && (
+          <TouchableOpacity
+            style={styles.relatedTab}
+            accessibilityRole="button"
+            accessibilityLabel="Mở bài luyện Rhythm Trainer"
+            onPress={() => router.push(
+              ("/practice/rhythm-trainer?pattern=" + encodeURIComponent(relatedRhythmId) + "&lesson=" + encodeURIComponent(lesson.id)) as any
+            )}
+          >
+            <View style={styles.relatedTabIcon}>
+              <Ionicons name="timer-outline" color={colors.accent} size={24} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.relatedTabTitle}>Luyện nhịp với Rhythm Trainer</Text>
+              <Text style={styles.muted}>Đếm phách · Quạt chả xuống/lên · Metronome</Text>
+              {!!progress?.rhythmAttempts && <Text style={styles.rhythmProgress}>
+                TAP tốt nhất {progress.rhythmBestScore ?? 0}% · {progress.rhythmAttempts} lượt đã lưu
+              </Text>}
+            </View>
+            <Ionicons name="arrow-forward" color={colors.accent} size={19}/>
+          </TouchableOpacity>
+        )}
+
         {relatedTabId && (
           <TouchableOpacity
             style={styles.relatedTab}
@@ -262,6 +294,7 @@ const styles = StyleSheet.create({
   relatedTab: {flexDirection:"row", alignItems:"center", gap:12, backgroundColor:colors.surfaceRaised, borderRadius:17, borderWidth:1, borderColor:colors.borderAccent, padding:16, marginTop:17},
   relatedTabIcon: {backgroundColor:colors.accentSoft, padding:10, borderRadius:12},
   relatedTabTitle: {color:colors.text, fontSize:15, fontWeight:"800"},
+  rhythmProgress: {color:colors.positive, fontSize:12, fontWeight:"800", marginTop:5},
   navigation: {flexDirection: "row", justifyContent: "space-between", marginTop: 27, gap: 15},
   navigationButton: {flexDirection: "row", alignItems: "center", gap: 7, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, padding: 13, borderRadius: 13},
   navigationText: {color: colors.accent, fontSize: 12, fontWeight: "800"},

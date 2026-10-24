@@ -7,6 +7,8 @@
 - Lưu Firestore theo tài khoản ở `users/{uid}/learningProgress/{lessonId}`
 - Trạng thái: `in_progress`, `completed`. Trang không lưu tiến độ nếu khách chưa đăng nhập.
 - Chưa có AI chấm bài học; quiz do ứng dụng kiểm tra, nhiệm vụ thực hành do người học xác nhận.
+- Rhythm Trainer liên kết từ Lesson Detail qua tham số `lesson`. Người đã đăng nhập có thể **chủ động lưu điểm TAP** sau một lượt 4 ô nhịp. Các trường `rhythmLastScore`, `rhythmBestScore`, `rhythmAttempts`, `rhythmLastBpm`, `rhythmLastPatternId`, `rhythmLastAtMs` được ghi vào cùng tài liệu Learning Progress.
+- Lưu điểm TAP chỉ đưa bài chưa bắt đầu sang `in_progress`; không tự đánh dấu `completed` và không hạ cấp bài đã hoàn thành. Điểm TAP là ước lượng thời gian bấm, không phải chứng nhận trình độ guitar.
 
 ## Quan trọng: cần cấp quyền Firestore (thực hiện trên Firebase Console)
 
@@ -49,7 +51,9 @@ npx expo start --web --port 8081
 4. Đánh dấu đủ 3 nhiệm vụ → trả lời đúng câu quiz → **Hoàn thành bài học**.
 5. Quay lại Learning Path: số bài hoàn thành tăng; F5: vẫn giữ trạng thái.
 6. Đăng nhập tài khoản khác: tiến độ phải tách biệt.
-7. Nếu thấy “Missing or insufficient permissions”: chưa áp dụng đúng Firestore Rules.
+7. Từ bài `count-four`, mở Rhythm Trainer, TAP trong 4 ô nhịp và bấm **Lưu kết quả vào bài học**. Quay lại bài học để kiểm tra điểm tốt nhất và số lượt; F5 phải giữ kết quả.
+8. Lưu nhiều lần để kiểm tra điểm tốt nhất không giảm. Bài đã hoàn thành không được trở về trạng thái đang học sau khi lưu TAP.
+9. Nếu thấy “Missing or insufficient permissions”: chưa áp dụng đúng Firestore Rules hoặc Rules hiện có không cho phép các trường `rhythm*`.
 
 ## Những việc dành cho giai đoạn sau
 - Sơ đồ hợp âm tương tác, tuner/metronome thực, player sheet, bài học có audio/video được cấp quyền.

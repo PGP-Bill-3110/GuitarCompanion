@@ -97,6 +97,24 @@ export default function PracticeScreen() {
           <Ionicons name="arrow-forward-circle" size={28} color={colors.accent} />
         </TouchableOpacity>
 
+        {/* RHYTHM TRAINER */}
+        <TouchableOpacity
+          style={styles.learningCard}
+          onPress={() => router.push("/practice/rhythm-trainer" as any)}
+          accessibilityRole="button"
+          accessibilityLabel="Mở Rhythm Trainer"
+        >
+          <View style={styles.learningIcon}>
+            <Ionicons name="timer-outline" size={26} color={colors.accent} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.learningEyebrow}>METRONOME & STRUMMING</Text>
+            <Text style={styles.learningTitle}>Rhythm Trainer</Text>
+            <Text style={styles.learningHint}>2/4 · 3/4 · 4/4 · 7 mẫu nhịp và luyện gõ phách</Text>
+          </View>
+          <Ionicons name="arrow-forward-circle" size={28} color={colors.accent} />
+        </TouchableOpacity>
+
         {/* PRACTICE HISTORY */}
 
         <TouchableOpacity

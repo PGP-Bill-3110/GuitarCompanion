@@ -19,7 +19,7 @@ import {
   getSongById,
 } from "../../../../data/songs";
 
-import PdfViewer from "../../../../components/PdfViewer.web";
+import PdfViewer from "../../../../components/PdfViewer";
 
 import PracticeSessionBar
   from "../../../../components/practice/PracticeSessionBar";
